@@ -33,3 +33,7 @@ jobs:
         cd suricata-5.0.3 && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
     - name: create zip
       run: zip -r suricata-v5.0.3.linux-amd64.zip suricata
+    - name: Upload release artifacts to Google Cloud Storage bucket
+      run: |
+        gsutil cp suricata-v5.0.3.linux-amd64.zip gs://brimsec/suricata/
+
