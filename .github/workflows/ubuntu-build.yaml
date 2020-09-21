@@ -24,4 +24,4 @@ jobs:
         tar xvzf suricata-5.0.3.tar.gz
     - name: configure
       run: |
-        cd suricata-5.0.3 && ./configure --enable-static=yes --enable-shared=no --prefix=/home/henridf/build
+        cd suricata-5.0.3 && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/build && make && make install-full
