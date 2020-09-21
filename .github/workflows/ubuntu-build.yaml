@@ -30,11 +30,11 @@ jobs:
         tar xvzf suricata-5.0.3.tar.gz
     - name: configure and build
       run: cd suricata-5.0.3 && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
+    - name: add brim files
+      run: cp suricatarunner brim-conf.yaml $HOME/suricata
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3.linux-amd64.zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim3.linux-amd64.zip suricata
     - name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        pwd
-        ls -lRt
-        gsutil cp $HOME/suricata-v5.0.3.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim3.linux-amd64.zip gs://brimsec/suricata/
 
