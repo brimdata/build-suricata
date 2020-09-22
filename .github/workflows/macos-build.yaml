@@ -1,0 +1,46 @@
+name: macOS build
+
+on:
+  pull_request:
+  # push:
+  #   branches:
+  #     - build-ubuntu*
+
+jobs:
+  build:
+    runs-on: macos-10.15
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup Google Cloud Platform
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCLOUD_CREDENTIAL_BRIMSEC_BUCKET }}
+    - name: install deps
+      run: |
+        brew install rust pkg-config
+        brew install jansson libmagic libnet libyaml lz4 nspr nss pcre bzip2
+        pip3 install pyyaml
+    - name: download suricata sources
+      run: |
+        curl -o suricata-5.0.3.tar.gz https://www.openinfosecfoundation.org/download/suricata-5.0.3.tar.gz
+        tar xvzf suricata-5.0.3.tar.gz
+    - name: configure and build
+      run: cd suricata-5.0.3 && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+    - name: build static binary
+      run: |
+        cp Makefile.brim suricata-5.0.3/src
+        cd suricata-5.0.3/src
+        # remove the dynamically-linked suricata and re-link statically using our Makefile
+        rm suricata
+        make -f Makefile.brim
+        cd ..
+        make install-full
+    - name: add brim files
+      run: cp suricatarunner brim-conf.yaml $HOME/suricata
+    - name: create zip
+      run: cd $HOME && zip -r suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip suricata
+    - name: Upload release artifacts to Google Cloud Storage bucket
+      run: |
+        gsutil cp $HOME/suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
