@@ -1,10 +1,12 @@
-name: Suricata-for-Brim Ubuntu build
+name: Ubuntu build
 
 on:
   pull_request:
-  # push:
-  #   branches:
-  #     - build-ubuntu*
+  push:
+    branches:
+      - master
+    tags:
+      - v*brim*
 
 jobs:
   build:
@@ -35,6 +37,7 @@ jobs:
       run: cp suricatarunner brim-conf.yaml $HOME/suricata
     - name: create zip
       run: cd $HOME && zip -r suricata-v5.0.3-brim3.linux-amd64.zip suricata
-    - name: Upload release artifacts to Google Cloud Storage bucket
+    - if: startsWith(github.event.ref, 'refs/tags/')
+      name: Upload release artifacts to Google Cloud Storage bucket
       run: |
         gsutil cp $HOME/suricata-v5.0.3-brim3.linux-amd64.zip gs://brimsec/suricata/
