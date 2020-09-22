@@ -36,7 +36,7 @@ jobs:
     - name: add brim files
       run: cp suricatarunner brim-conf.yaml $HOME/suricata
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim3.linux-amd64.zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: startsWith(github.event.ref, 'refs/tags/')
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
