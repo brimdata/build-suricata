@@ -34,7 +34,9 @@ jobs:
       # --disable-gccmatch-native is to avoid "illegal instruction" crashes when running on a different x86_64 CPU.
       run: cd suricata-5.0.3 && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
     - name: add brim files
-      run: cp suricatarunner brim-conf.yaml $HOME/suricata
+      run: |
+        cp brim-conf.yaml $HOME/suricata
+        cp suricatarunner-linux $HOME/suricata/suricatarunner
     - name: create zip
       run: cd $HOME && zip -r suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: startsWith(github.event.ref, 'refs/tags/')

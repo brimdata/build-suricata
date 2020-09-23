@@ -38,7 +38,15 @@ jobs:
         cd ..
         make install-full
     - name: add brim files
-      run: cp suricatarunner brim-conf.yaml $HOME/suricata
+      run: |
+        cp brim-conf.yaml $HOME/suricata
+        cp suricatarunner-macOS $HOME/suricata/suricatarunner
+    - name: add magic file
+      run: |
+        version=$(brew list --versions libmagic | cut -d ' ' -f 2)
+        echo found libmagic version $version
+        mkdir -p $HOME/suricata/share/file
+        cp /usr/local/Cellar/libmagic/$version/share/misc/magic.mgc $HOME/suricata/share/file
     - name: create zip
       run: cd $HOME && zip -r suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip suricata
     - name: Upload release artifacts to Google Cloud Storage bucket
