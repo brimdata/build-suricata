@@ -5,8 +5,6 @@ on:
   push:
     branches:
       - master
-    tags:
-      - v*brim*
 
 jobs:
   build:
@@ -39,7 +37,7 @@ jobs:
         cp suricatarunner-linux $HOME/suricata/suricatarunner
     - name: create zip
       run: cd $HOME && zip -r suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip suricata
-    - if: startsWith(github.event.ref, 'refs/tags/')
+    - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
         gsutil cp $HOME/suricata-v5.0.3-brim3.linux-amd64.zip gs://brimsec/suricata/
