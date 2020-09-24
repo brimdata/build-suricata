@@ -2,4 +2,11 @@
 
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-exec "$dir/bin/suricata" -c "$dir/brim-conf.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set magic-file="$dir/share/file/magic.mgc" -r /dev/stdin
+cp $dir/brim-conf.yaml $dir/brim-conf-run.yaml
+echo "
+default-rule-path: $dir/share/suricata/rules
+rule-files:
+  - $dir/var/lib/suricata/rules/suricata.rules
+" >> $dir/brim-conf-run.yaml
+
+exec "$dir/bin/suricata" -c "$dir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" --set magic-file="$dir/share/file/magic.mgc" -r /dev/stdin

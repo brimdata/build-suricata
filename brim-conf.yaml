@@ -1,6 +1,48 @@
 %YAML 1.1
 ---
 
+vars:
+  # more specific is better for alert accuracy and performance
+  address-groups:
+    HOME_NET: "[192.168.0.0/16,10.0.0.0/8,172.16.0.0/12]"
+    #HOME_NET: "[192.168.0.0/16]"
+    #HOME_NET: "[10.0.0.0/8]"
+    #HOME_NET: "[172.16.0.0/12]"
+    #HOME_NET: "any"
+
+    EXTERNAL_NET: "!$HOME_NET"
+    #EXTERNAL_NET: "any"
+
+    HTTP_SERVERS: "$HOME_NET"
+    SMTP_SERVERS: "$HOME_NET"
+    SQL_SERVERS: "$HOME_NET"
+    DNS_SERVERS: "$HOME_NET"
+    TELNET_SERVERS: "$HOME_NET"
+    AIM_SERVERS: "$EXTERNAL_NET"
+    DC_SERVERS: "$HOME_NET"
+    DNP3_SERVER: "$HOME_NET"
+    DNP3_CLIENT: "$HOME_NET"
+    MODBUS_CLIENT: "$HOME_NET"
+    MODBUS_SERVER: "$HOME_NET"
+    ENIP_CLIENT: "$HOME_NET"
+    ENIP_SERVER: "$HOME_NET"
+
+  port-groups:
+    HTTP_PORTS: "80"
+    SHELLCODE_PORTS: "!80"
+    ORACLE_PORTS: 1521
+    SSH_PORTS: 22
+    DNP3_PORTS: 20000
+    MODBUS_PORTS: 502
+    FILE_DATA_PORTS: "[$HTTP_PORTS,110,143]"
+    FTP_PORTS: 21
+    VXLAN_PORTS: 4789
+    TEREDO_PORTS: 3544
+
+
+stats:
+  enabled: no
+
 outputs:
   # Extensible Event Format (nicknamed EVE) event log in JSON format
   - eve-log:
@@ -53,10 +95,10 @@ outputs:
             metadata:
 
               # Include the decoded application layer (ie. http, dns)
-              app-layer: true
+              app-layer: false
 
               # Log the the current state of the flow record.
-              flow: true
+              flow: false
 
               rule:
                 # Log the metadata field from the rule in a structured
@@ -73,109 +115,31 @@ outputs:
             # or forward proxied.
             xff:
               enabled: no
-              # Two operation modes are available, "extra-data" and "overwrite".
-              mode: extra-data
-              # Two proxy deployments are supported, "reverse" and "forward". In
-              # a "reverse" deployment the IP address used is the last one, in a
-              # "forward" deployment the first IP address is used.
-              deployment: reverse
-              # Header name where the actual IP address will be reported, if more
-              # than one IP address is present, the last IP address will be the
-              # one taken into consideration.
-              header: X-Forwarded-For
         - http:
-            extended: yes     # enable this for extended logging information
-            # custom allows additional http fields to be included in eve-log
-            # the example below adds three additional fields when uncommented
-            #custom: [Accept-Encoding, Accept-Language, Authorization]
-        - dns:
-            # Use version 2 logging with the new format:
-            # dns answers will be logged in one single event
-            # rather than an event for each of the answers.
-            # Without setting a version the version
-            # will fallback to 1 for backwards compatibility.
-            version: 2
-
-            # Enable/disable this logger. Default: enabled.
             enabled: no
-
-            # Control logging of requests and responses:
-            # - requests: enable logging of DNS queries
-            # - responses: enable logging of DNS answers
-            # By default both requests and responses are logged.
-            #requests: no
-            #responses: no
-
-            # Format of answer logging:
-            # - detailed: array item per answer
-            # - grouped: answers aggregated by type
-            # Default: all
-            #answer-format: [detailed, grouped]
-
-            # Answer types to log.
-            # Default: all
-            #answer-types: [a, aaaa, cname, mx, ns, ptr, txt]
         - dns:
-            # Version 1 (deprecated) DNS logger.
-            version: 1
-
             enabled: no
-            # control logging of queries and answers
-            # default yes, no to disable
-            query: yes     # enable logging of DNS queries
-            answer: yes    # enable logging of DNS answers
-            # control which RR types are logged
-            # all enabled if custom not specified
-            #custom: [a, aaaa, cname, mx, ns, ptr, txt]
+        - dns:
+            enabled: no
         - tls:
-            extended: yes     # enable this for extended logging information
-            # output TLS transaction where the session is resumed using a
-            # session id
-            #session-resumption: no
-            # custom allows to control which tls fields that are included
-            # in eve-log
-            #custom: [subject, issuer, session_resumed, serial, fingerprint, sni, version, not_before, not_after, certificate, chain]
-        - files:
-            force-magic: no   # force logging magic on all logged files
-            # force logging of checksums, available hash functions are md5,
-            # sha1 and sha256
-            #force-hash: [md5]
-        #- drop:
-        #    alerts: yes      # log alerts that caused drops
-        #    flows: all       # start or all: 'start' logs only a single drop
-        #                     # per flow direction. All logs each dropped pkt.
-        - smtp:
-            #extended: yes # enable this for extended logging information
-            # this includes: bcc, message-id, subject, x_mailer, user-agent
-            # custom fields logging from the list:
-            #  reply-to, bcc, message-id, subject, x-mailer, user-agent, received,
-            #  x-originating-ip, in-reply-to, references, importance, priority,
-            #  sensitivity, organization, content-md5, date
-            #custom: [received, x-mailer, x-originating-ip, relays, reply-to, bcc]
-            # output md5 of fields: body, subject
-            # for the body you need to set app-layer.protocols.smtp.mime.body-md5
-            # to yes
-            #md5: [body, subject]
-
-        # NFS logging. Requires Rust.
-        - nfs
-        # IKEv2 logging. Requires Rust.
-        - ikev2
-        - ssh
-        - stats:
-            totals: yes       # stats for all threads merged together
-            threads: no       # per thread stats
-            deltas: no        # include delta values
-        - dhcp:
-            # DHCP logging requires Rust.
             enabled: no
-            # When extended mode is on, all DHCP messages are logged
-            # with full detail. When extended mode is off (the
-            # default), just enough information to map a MAC address
-            # to an IP address is logged.
-            extended: no
-        # bi-directional flows
+        - files:
+            enabled: no
+        - smtp:
+            enabled: no
+        - nfs:
+            enabled: no
+        - ikev2:
+            enabled: no
+        - ssh:
+            enabled: no
+        - stats:
+            enabled: no
+        - dhcp:
+            enabled: no
         - flow:
+            enabled: no
+        - packet:
             enabled: no
         # uni-directional flows
         #- netflow
@@ -183,3 +147,4 @@ outputs:
         # An event for logging metadata, specifically pktvars when
         # they are set, but will also include the full metadata object.
         #- metadata
+
