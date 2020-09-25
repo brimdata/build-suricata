@@ -39,6 +39,7 @@ vars:
     VXLAN_PORTS: 4789
     TEREDO_PORTS: 3544
 
+runmode: single
 
 stats:
   enabled: no
