@@ -2,9 +2,9 @@ name: macOS build
 
 on:
   pull_request:
-  # push:
-  #   branches:
-  #     - build-ubuntu*
+  push:
+    branches:
+      - master
 
 jobs:
   build:
@@ -48,7 +48,8 @@ jobs:
         mkdir -p $HOME/suricata/share/file
         cp /usr/local/Cellar/libmagic/$version/share/misc/magic.mgc $HOME/suricata/share/file
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip suricata
-    - name: Upload release artifacts to Google Cloud Storage bucket
+      run: cd $HOME && zip -r suricata-v5.0.3-brim4.$(go env GOOS)-$(go env GOARCH).zip suricata
+    - if: github.ref == 'refs/heads/master'
+      name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim3.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim4.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
