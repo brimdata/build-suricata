@@ -1,0 +1,43 @@
+name: Windows build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+defaults:
+ run:
+   shell: bash
+
+
+jobs:
+  build:
+    runs-on: windows-2019
+    steps:
+    - name: uname
+      run: |
+        uname -a
+    - name: Use MSYS2's bash.exe in subsequent steps.
+      run: echo '::add-path::C:\msys64\usr\bin'
+    - name: uname
+      run: |
+        uname -a
+    - uses: actions/checkout@v2
+    - name: env
+      run: |
+        env
+    - name: ls, which ls
+      run: |
+        ls .
+        ls /d/a/build-suricata/build-suricata
+        ls -R
+        which ls
+#    - name: ls /dev/stding
+# Cannot find path 'D:\dev\stdin' because it does not exist
+#      run: |
+#        ls /dev/stdin
+    - name: pwd
+      run: |
+        pwd
+    - run: ./release
