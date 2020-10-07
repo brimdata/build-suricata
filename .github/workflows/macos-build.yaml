@@ -22,12 +22,14 @@ jobs:
         brew install rust pkg-config
         brew install jansson libmagic libnet libyaml lz4 nspr nss pcre bzip2
         pip3 install pyyaml
-    - name: download suricata sources
+    - name: clone Suricata and autogen
       run: |
-        curl -o suricata-5.0.3.tar.gz https://www.openinfosecfoundation.org/download/suricata-5.0.3.tar.gz
-        tar xvzf suricata-5.0.3.tar.gz
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
+        cd suricata
+        git clone https://github.com/OISF/libhtp -b 0.5.x
+        ./autogen.sh
     - name: configure and build
-      run: cd suricata-5.0.3 && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+      run: ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
     - name: build static binary
       run: |
         cp Makefile.brim suricata-5.0.3/src
