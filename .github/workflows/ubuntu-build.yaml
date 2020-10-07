@@ -30,9 +30,15 @@ jobs:
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         ./autogen.sh
+    - name: get suricata-update
+      run: |
+        curl -L \
+              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
+              tar zxvf - --strip-components=1
+      working-directory: suricata/suricata-update
     - name: configure and build
       # --disable-gccmatch-native is to avoid "illegal instruction" crashes when running on a different x86_64 CPU.
-      run: ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
+      run: cd suricata && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata

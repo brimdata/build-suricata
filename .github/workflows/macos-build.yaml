@@ -21,6 +21,7 @@ jobs:
       run: |
         brew install rust pkg-config
         brew install jansson libmagic libnet libyaml lz4 nspr nss pcre bzip2
+        brew install autoconf automake libtool
         pip3 install pyyaml
     - name: clone Suricata and autogen
       run: |
@@ -28,12 +29,18 @@ jobs:
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         ./autogen.sh
+    - name: get suricata-update
+      run: |
+        curl -L \
+              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
+              tar zxvf - --strip-components=1
+      working-directory: suricata/suricata-update
     - name: configure and build
-      run: ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+      run: cd suricata && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
     - name: build static binary
       run: |
-        cp Makefile.brim suricata-5.0.3/src
-        cd suricata-5.0.3/src
+        cp Makefile.brim suricata/src
+        cd suricata/src
         # remove the dynamically-linked suricata and re-link statically using our Makefile
         rm suricata
         make -f Makefile.brim
