@@ -9,4 +9,4 @@ rule-files:
   - $dir/var/lib/suricata/rules/suricata.rules
 " >> $dir/brim-conf-run.yaml
 
-exec "$dir/bin/suricata" -c "$dir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r /dev/stdin
+exec "$dir/bin/suricata" -c "$dir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r -
