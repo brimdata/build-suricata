@@ -3,6 +3,8 @@
 
 export PATH=/mingw64/bin:$PATH
 
+uname -a
+
 choco install winpcap --no-progress
 
 curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
