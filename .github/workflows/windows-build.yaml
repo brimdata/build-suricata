@@ -16,7 +16,7 @@ jobs:
     runs-on: windows-2019
     steps:
     - name: Use MSYS2's bash.exe in subsequent steps.
-      run: echo '::add-path::C:\msys64\usr\bin'
+      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - uses: actions/checkout@v2
     - name: Setup Google Cloud Platform
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
@@ -51,6 +51,8 @@ jobs:
               https://github.com/OISF/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
+    - name: Add mingw64 bin path
+      run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: configure and build
       run: |
         ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static
