@@ -9,4 +9,6 @@ rule-files:
   - $dir/var/lib/suricata/rules/suricata.rules
 " >> $dir/brim-conf-run.yaml
 
+# xxx this should be unified with suricatarunner-Linux, as the only difference is the parameter --set magic-file="$dir/share/file/magic.mgc"
+
 exec "$dir/bin/suricata" -c "$dir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" --set magic-file="$dir/share/file/magic.mgc" -r -

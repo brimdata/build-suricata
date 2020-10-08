@@ -48,4 +48,4 @@ jobs:
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim5.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
