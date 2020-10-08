@@ -1,7 +1,6 @@
 #!/bin/sh -ex
 
-exe=.exe
-export MSYS=winsymlinks:nativestrict
+
 export PATH=/mingw64/bin:$PATH
 
 choco install winpcap --no-progress
@@ -9,7 +8,7 @@ choco install winpcap --no-progress
 curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
 7z x -y -o'c:\npcap\' npcap-sdk-1.01.zip
 
-#pacman -Syuu
+
 pacman -Su --noconfirm libyaml-devel pcre-devel jansson-devel
 pacman -Su --noconfirm \
        mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
