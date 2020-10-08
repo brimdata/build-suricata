@@ -55,3 +55,4 @@ jobs:
       run: |
         ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static
         make -j2
+      working-directory: suricata
