@@ -26,6 +26,7 @@ jobs:
         service_account_key: ${{ secrets.GCLOUD_CREDENTIAL_BRIMSEC_BUCKET }}
     - name: install deps
       run: |
+        uname -a
         choco install winpcap --no-progress
         curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
         7z x -y -o'c:\npcap\' npcap-sdk-1.01.zip
@@ -60,6 +61,7 @@ jobs:
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: configure and build Suricata
       run: |
+        uname -a
         ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static
         make -j2
       working-directory: suricata
