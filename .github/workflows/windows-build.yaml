@@ -62,8 +62,16 @@ jobs:
     - name: configure and build Suricata
       run: |
         uname -a
-        ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static
+        CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static
         make -j2
+        cp ../Makefile-windows.brim src/Makefile.brim
+        cd src
+        # re-link with some our modified Makefile that statically links those static libs that could be.
+        rm suricata && make -f Makefile.brim
+        cd ..
+        make install-full
+        # add the remaining .dlls
+        mkdir suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} suricata/dlls
       working-directory: suricata
     - name: add brim files
       run: |

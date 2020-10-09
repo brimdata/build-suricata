@@ -39,7 +39,7 @@ jobs:
       run: cd suricata && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
     - name: build static binary
       run: |
-        cp Makefile.brim suricata/src
+        cp Makefile-macOS.brim suricata/src/Makefile.brim
         cd suricata/src
         # remove the dynamically-linked suricata and re-link statically using our Makefile
         rm suricata
