@@ -39,13 +39,13 @@ rule-files:
   - %s/var/lib/suricata/rules/suricata.rules
 `, baseDir, baseDir)
 
-	input, err := ioutil.ReadFile(source)
+	input, err := ioutil.ReadFile(filepath.Join(baseDir, source))
 	if err != nil {
 		return err
 	}
 	input = append(input, []byte(ruleConfig)...)
 
-	return ioutil.WriteFile(dest, input, 0644)
+	return ioutil.WriteFile(filepath.Join(baseDir, dest), input, 0644)
 }
 
 func runSuricata(baseDir, execPath string) error {
@@ -67,6 +67,10 @@ func main() {
 	baseDir, err := zdepsSuricataDirectory()
 	if err != nil {
 		log.Fatalln("zdepsSuricataDirectory failed:", err)
+	}
+
+	if err := makeConfig(baseDir, "brim-conf.yaml", "brim-conf-run.yaml"); err != nil {
+		log.Fatalln("makeConfig failed:", err)
 	}
 
 	execPath := filepath.Join(baseDir, filepath.FromSlash(execRelPath))
