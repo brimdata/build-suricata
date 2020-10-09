@@ -60,6 +60,9 @@ func runSuricata(baseDir, execPath string) error {
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
+	path := fmt.Sprintf("PATH=%s;%s", filepath.Join(baseDir, "dlls"), os.Getenv("PATH"))
+	cmd.Env = append(os.Environ(), path)
+
 	return cmd.Run()
 }
 
