@@ -78,7 +78,7 @@ jobs:
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
-        cp suricatarunner.exe $HOME/suricata/suricatarunner
+        cp suricatarunner.exe $HOME/suricata/suricatarunner.exe
     - name: create zip
       run: |
         cd $HOME && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
