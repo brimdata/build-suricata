@@ -82,9 +82,10 @@ jobs:
         make install
         # make install-conf doesn't work on windows as it has hard-coded to write to C:/Program Files/suricata.
         mkdir -p $HOME/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config $HOME/suricata/etc/suricata
-        make install-rules
         # add the .dlls that couldn't be statically linked.
         mkdir $HOME/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} $HOME/suricata/dlls
+        # make install-rules doesn't work on github actions windows runner because configure doesn't detect the presence of python.
+        cd src &&  make -f Makefile.brim install-rules
       working-directory: suricata
     - name: add brim files
       run: |

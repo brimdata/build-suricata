@@ -7,3 +7,9 @@ nspr_libs = /mingw64/lib/libnspr4_s.a /mingw64/lib/libplc4_s.a /mingw64/lib/libp
 suricata$(EXEEXT): $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata_DEPENDENCIES)
 	@rm -f suricata$(EXEEXT)
 	$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) $(LIBS) $(nspr_libs) /mingw64/lib/libpcre.a /mingw64/lib/libjansson.a /mingw64/lib/liblz4.a /mingw64/lib/libyaml.a /mingw64/lib/libz.a
+
+install-rules:
+	LD_LIBRARY_PATH=$(libdir) $(DESTDIR)$(bindir)/suricata-update \
+		--suricata $(DESTDIR)$(bindir)/suricata \
+		--suricata-conf $(DESTDIR)$(sysconfdir)/suricata/suricata.yaml \
+		--no-test --no-reload
