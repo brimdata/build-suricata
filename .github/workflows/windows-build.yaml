@@ -34,7 +34,7 @@ jobs:
         pacman -Su --noconfirm \
           mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
-        pacman -Su python3-pip
+        pacman -Su --noconfirm python3-pip
         pip3 install --upgrade pip
         pip3 install pyyaml
     - uses: actions/setup-go@v2
