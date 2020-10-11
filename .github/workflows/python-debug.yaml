@@ -27,13 +27,13 @@ jobs:
     - name: install deps
       run: |
         uname -a
-        choco install winpcap --no-progress
-        curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
-        7z x -y -o'c:\npcap\' npcap-sdk-1.01.zip
-        pacman -Su --noconfirm libyaml-devel pcre-devel jansson-devel
-        pacman -Su --noconfirm \
-          mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
-          mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
+        # choco install winpcap --no-progress
+        # curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
+        # 7z x -y -o'c:\npcap\' npcap-sdk-1.01.zip
+        # pacman -Su --noconfirm libyaml-devel pcre-devel jansson-devel
+        # pacman -Su --noconfirm \
+        #   mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
+        #   mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
         pacman -Su --noconfirm python3-pip
         pip3 install --upgrade pip
         pip3 install pyyaml
@@ -46,7 +46,13 @@ jobs:
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: try import yaml
-      run:  python -c "import yaml"
+      run: |
+        pip3 install --upgrade pip
+        pip3 install pyyaml
+        pip3 list
+        which python
+        which python3
+        python -c "import yaml"
     - name: configure and build Suricata
       run: |
         pip3 install --upgrade pip
