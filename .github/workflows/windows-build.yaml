@@ -63,6 +63,8 @@ jobs:
         curl -L \
               https://github.com/OISF/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
+        pwd
+        ls 
       working-directory: suricata/suricata-update
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
