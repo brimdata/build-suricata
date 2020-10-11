@@ -68,6 +68,13 @@ jobs:
         ls -lR /home/runneradmin/suricata/bin/suricata-update
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
+    - name: Import yaml
+      run: |
+        pacman -S --noconfirm mingw-w64-x86_64-python-pip
+        echo pacman ok
+        pip3 install pyyaml
+        pip3 list
+        python -c "import yaml"
     - name: configure and build Suricata
       run: |
         pip3 install --upgrade pip
