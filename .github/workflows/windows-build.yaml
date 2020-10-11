@@ -76,9 +76,6 @@ jobs:
         python -c "import yaml"
     - name: configure and build Suricata
       run: |
-        pip3 install --upgrade pip
-        pip3 install pyyaml
-        pip3 list
         uname -a
         CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --prefix $HOME/suricata
         make -j2
