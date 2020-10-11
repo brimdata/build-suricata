@@ -47,7 +47,7 @@ jobs:
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: try import yaml
       run: |
-        pacman -S mingw-w64-x86_64-python-pip
+        pacman -S --noconfirm mingw-w64-x86_64-python-pip
         pip3 install --upgrade pip
         pip3 install pyyaml
         pip3 list
