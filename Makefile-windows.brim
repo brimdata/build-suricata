@@ -10,6 +10,6 @@ suricata$(EXEEXT): $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata
 
 install-rules:
 	LD_LIBRARY_PATH=$(libdir) $(DESTDIR)$(bindir)/suricata-update \
-		--suricata $(DESTDIR)$(bindir)/suricata \
+		--suricata $(DESTDIR)$(bindir)/suricata.exe \
 		--suricata-conf $(DESTDIR)$(sysconfdir)/suricata/suricata.yaml \
 		--no-test --no-reload
