@@ -48,14 +48,9 @@ jobs:
     - name: try import yaml
       run: |
         pacman -S --noconfirm mingw-w64-x86_64-python-pip
-        pip3 install --upgrade pip
+        echo pacman ok
         pip3 install pyyaml
         pip3 list
-        which python
-        which python3
-        python --version
-        python3 --version
-        python3 -c "import yaml"
         python -c "import yaml"
     - name: configure and build Suricata
       run: |
