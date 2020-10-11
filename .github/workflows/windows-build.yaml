@@ -38,9 +38,6 @@ jobs:
         pip3 install --upgrade pip
         pip3 install pyyaml
         pip3 list
-        which pip3
-        which python
-        python --version
     - uses: actions/setup-go@v2
       with:
         go-version: 1.14
@@ -95,6 +92,7 @@ jobs:
         mkdir -p $HOME/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config $HOME/suricata/etc/suricata
         # add the .dlls that couldn't be statically linked.
         mkdir $HOME/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} $HOME/suricata/dlls
+        ls -lR $HOME/suricata
         make install-rules
       working-directory: suricata
     - name: add brim files
