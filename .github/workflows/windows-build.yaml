@@ -65,7 +65,6 @@ jobs:
         curl -L \
               https://github.com/OISF/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
-        ls -lR /home/runneradmin/suricata/bin/suricata-update
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: Import yaml
@@ -93,8 +92,7 @@ jobs:
         mkdir -p $HOME/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config $HOME/suricata/etc/suricata
         # add the .dlls that couldn't be statically linked.
         mkdir $HOME/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} $HOME/suricata/dlls
-        # make install-rules doesn't work on github actions windows runner because configure doesn't detect the presence of python.
-        cd src &&  make -f Makefile.brim install-rules
+        make install-rules
       working-directory: suricata
     - name: add brim files
       run: |
