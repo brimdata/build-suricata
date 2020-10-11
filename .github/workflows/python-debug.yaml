@@ -52,6 +52,7 @@ jobs:
         pip3 list
         which python
         which python3
+        python3 -c "import yaml"
         python -c "import yaml"
     - name: configure and build Suricata
       run: |
