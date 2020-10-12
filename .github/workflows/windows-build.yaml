@@ -103,8 +103,8 @@ jobs:
       run: |
         echo $SHELL
         which pip3
-    - name: Use MSYS2's bash.exe in subsequent steps.
-      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
+#    - name: Use MSYS2's bash.exe in subsequent steps.
+#      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: echo SHELL
       run: |
         echo $SHELL
