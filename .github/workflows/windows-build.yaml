@@ -100,6 +100,8 @@ jobs:
       run: |
         cp brim-conf.yaml $HOME/suricata
         cp suricatarunner.exe $HOME/suricata/suricatarunner.exe
+    - name: Use MSYS2's bash.exe in subsequent steps.
+      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: install rules
       # We install rules this way rather than "make install-rules"
       # because (1) the configure script on the github actions windows
@@ -118,6 +120,8 @@ jobs:
     - name: create zip
       run: |
         cd $HOME && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
+    - name: Add mingw64 bin path
+      run: echo "/mingw64/bin" >> $GITHUB_PATH
     - #if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
