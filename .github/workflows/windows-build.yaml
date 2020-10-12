@@ -16,6 +16,10 @@ jobs:
     runs-on: windows-2019
     steps:
     - uses: actions/checkout@v2
+    - name: echo PATH
+      run: echo $PATH
+    - name: Add mingw64 bin path
+      run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: Setup Google Cloud Platform
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
