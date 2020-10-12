@@ -69,7 +69,7 @@ jobs:
     - name: configure and build Suricata
       run: |
         pacman -S --noconfirm mingw-w64-x86_64-python-pip
-        CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --prefix $HOME/suricata
+        CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --prefix /home/runneradmin/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
@@ -78,15 +78,15 @@ jobs:
         cd ..
         make install
         # make install-conf doesn't work on windows as it has hard-coded to write to C:/Program Files/suricata.
-        mkdir -p $HOME/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config $HOME/suricata/etc/suricata
+        mkdir -p /home/runneradmin/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config /home/runneradmin/suricata/etc/suricata
         # add the .dlls that couldn't be statically linked.
-        mkdir $HOME/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} $HOME/suricata/dlls
-        ls -lR $HOME/suricata
+        mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} /home/runneradmin/suricata/dlls
+        ls -lR /home/runneradmin/suricata
       working-directory: suricata
     - name: add brim files
       run: |
-        cp brim-conf.yaml $HOME/suricata
-        cp suricatarunner.exe $HOME/suricata/suricatarunner.exe
+        cp brim-conf.yaml /home/runneradmin/suricata
+        cp suricatarunner.exe /home/runneradmin/suricata/suricatarunner.exe
     - name: Use MSYS2's bash.exe in subsequent steps.
       run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: install rules
@@ -109,11 +109,11 @@ jobs:
       working-directory: suricata
     - name: create zip
       run: |
-        cd $HOME && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
+        cd /home/runneradmin && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - #if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp /home/runneradmin/suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
 
