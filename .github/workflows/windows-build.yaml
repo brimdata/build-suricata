@@ -34,10 +34,6 @@ jobs:
         pacman -Su --noconfirm \
           mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
-        pacman -Su --noconfirm python3-pip
-        pip3 install --upgrade pip
-        pip3 install pyyaml
-        pip3 list
     - uses: actions/setup-go@v2
       with:
         go-version: 1.14
@@ -70,16 +66,9 @@ jobs:
     #           tar zxvf - --strip-components=1
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
-    - name: Import yaml
-      run: |
-        pacman -S --noconfirm mingw-w64-x86_64-python-pip
-        echo pacman ok
-        pip3 install pyyaml
-        pip3 list
-        python -c "import yaml"
     - name: configure and build Suricata
       run: |
-        uname -a
+        pacman -S --noconfirm mingw-w64-x86_64-python-pip
         CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --prefix $HOME/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
@@ -94,8 +83,6 @@ jobs:
         mkdir $HOME/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} $HOME/suricata/dlls
         ls -lR $HOME/suricata
       working-directory: suricata
-    - name: add dlls to path
-      run: echo "$HOME/suricata/dlls" >> $GITHUB_PATH
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
