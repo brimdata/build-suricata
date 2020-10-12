@@ -117,7 +117,7 @@ jobs:
         mkdir -p /home/runneradmin/suricata/var/lib/suricata
         /home/runneradmin/suricata/bin/suricata-update --suricata-version 5.0.3 --url https://storage.googleapis.com/brimsec/suricata/emerging.rules.tar.gz \
           --local /home/runneradmin/suricata/share/suricata/rules --suricata-conf /home/runneradmin/suricata/etc/suricata/suricata.yaml \
-          --data-dir /home/runneradmin/suricata/var/lib/suricata
+          --data-dir /home/runneradmin/suricata/var/lib/suricata \
           --no-test --no-reload
       working-directory: suricata
     - name: create zip
