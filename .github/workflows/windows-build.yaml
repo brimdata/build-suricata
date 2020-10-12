@@ -97,8 +97,11 @@ jobs:
       # python script fails with a certificate error when trying to connect
       # to https://rules.emergingthreats.net.
       run: |
+        pacman -Su --noconfirm python3-pip
+        pip3 install --upgrade pip
+        pip3 install pyyaml
         mkdir -p /home/runneradmin/suricata/var/lib/suricata
-        pip install suricata-update
+        pip3 install suricata-update
         suricata-update --suricata-version 5.0.3 --url https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz \
           --local /home/runneradmin/suricata/share/suricata/rules --suricata-conf /home/runneradmin/suricata/etc/suricata/suricata.yaml \
           --data-dir /home/runneradmin/suricata/var/lib/suricata \
