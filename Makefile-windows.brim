@@ -8,8 +8,18 @@ suricata$(EXEEXT): $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata
 	@rm -f suricata$(EXEEXT)
 	$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) $(LIBS) $(nspr_libs) /mingw64/lib/libpcre.a /mingw64/lib/libjansson.a /mingw64/lib/liblz4.a /mingw64/lib/libyaml.a /mingw64/lib/libz.a
 
+
+# we have our own install-rules because (1) the configure script on
+# the github actions windows runner doesn't detect the presence of
+# python (though it does on a regular win/msys) and (2) the
+# suricata-update python script fails with a cert error when trying to
+# connect to https://rules.emergingthreats.net fails with a
+# certificate error.
 install-rules:
+	curl -L -o emerging.rules.tar.gz https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz
 	$(DESTDIR)$(bindir)/suricata-update \
 		--suricata-version 5.0.3 \
+		--url file:///dev/null \
+		--local emerging.rules.tar.gz
 		--suricata-conf $(DESTDIR)$(sysconfdir)/suricata/suricata.yaml \
 		--no-test --no-reload
