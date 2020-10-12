@@ -21,11 +21,17 @@ jobs:
     - name: Use MSYS2's bash.exe in subsequent steps.
       run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: echo SHELL
-      run: echo $SHELL
+      run: |
+        echo $SHELL
+        which pacman
+        which make
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: echo SHELL
-      run: echo $SHELL
+      run: |
+        echo $SHELL
+        which pacman
+        which make
     - name: Setup Google Cloud Platform
       uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       with:
@@ -72,8 +78,6 @@ jobs:
     #     curl -L \
     #           https://github.com/OISF/suricata-update/archive/master.tar.gz | \
     #           tar zxvf - --strip-components=1
-    - name: Add mingw64 bin path
-      run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: configure and build Suricata
       run: |
         pacman -S --noconfirm mingw-w64-x86_64-python-pip
@@ -95,8 +99,16 @@ jobs:
       run: |
         cp brim-conf.yaml /home/runneradmin/suricata
         cp suricatarunner.exe /home/runneradmin/suricata/suricatarunner.exe
+    - name: echo SHELL
+      run: |
+        echo $SHELL
+        which pip3
     - name: Use MSYS2's bash.exe in subsequent steps.
       run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
+    - name: echo SHELL
+      run: |
+        echo $SHELL
+        which pip3
     - name: install rules
       # We install rules this way rather than "make install-rules"
       # because (1) the configure script on the github actions windows
