@@ -61,13 +61,13 @@ jobs:
               https://github.com/OISF/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
-    - name: get suricata-update
-      run: |
-        mkdir -p /home/runneradmin/suricata/suricata-update
-        cd /home/runneradmin/suricata/suricata-update
-        curl -L \
-              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
-              tar zxvf - --strip-components=1
+    # - name: get suricata-update
+    #   run: |
+    #     mkdir -p /home/runneradmin/suricata/suricata-update
+    #     cd /home/runneradmin/suricata/suricata-update
+    #     curl -L \
+    #           https://github.com/OISF/suricata-update/archive/master.tar.gz | \
+    #           tar zxvf - --strip-components=1
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: Import yaml
