@@ -1,0 +1,125 @@
+name: Windows build
+
+on:
+  pull_request:
+  push:
+    branches:
+      - master
+
+defaults:
+ run:
+   shell: bash
+
+jobs:
+  build:
+
+    runs-on: windows-2019
+    steps:
+    - name: Use MSYS2's bash.exe in subsequent steps.
+      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
+    - uses: actions/checkout@v2
+    - name: Setup Google Cloud Platform
+      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      with:
+        version: '290.0.1'
+        project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
+        service_account_key: ${{ secrets.GCLOUD_CREDENTIAL_BRIMSEC_BUCKET }}
+    - name: install deps
+      run: |
+        uname -a
+        choco install winpcap --no-progress
+        curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
+        7z x -y -o'c:\npcap\' npcap-sdk-1.01.zip
+        pacman -Su --noconfirm libyaml-devel pcre-devel jansson-devel
+        pacman -Su --noconfirm \
+          mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
+          mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
+        pacman -Su --noconfirm python3-pip
+        pip3 install --upgrade pip
+        pip3 install pyyaml
+        pip3 list
+    - uses: actions/setup-go@v2
+      with:
+        go-version: 1.14
+    - name: build Suricata runner
+      run: go build -o suricatarunner.exe suricatarunner-windows.go
+    - name: clone Suricata and autogen
+      run: |
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
+        cd suricata
+        git clone https://github.com/OISF/libhtp -b 0.5.x
+        dos2unix.exe libhtp/configure.ac
+        dos2unix.exe libhtp/htp.pc.in
+        dos2unix.exe libhtp/Makefile.am
+        ./autogen.sh
+        # hack to make configure mis-detect -DFORTIFY_SOURCE as being unavailable.
+        sed -i 's/FORTIFY_SOURCE/FORTIFY_SOURCE_DISABLE/g' ./configure
+        sed -i 's/FORTIFY_SOURCE/FORTIFY_SOURCE_DISABLE/g' ./libhtp/configure
+    - name: get suricata-update
+      run: |
+        curl -L \
+              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
+              tar zxvf - --strip-components=1
+      working-directory: suricata/suricata-update
+    - name: get suricata-update
+      run: |
+        mkdir -p /home/runneradmin/suricata/suricata-update
+        cd /home/runneradmin/suricata/suricata-update
+        curl -L \
+              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
+              tar zxvf - --strip-components=1
+    - name: Add mingw64 bin path
+      run: echo "/mingw64/bin" >> $GITHUB_PATH
+    - name: Import yaml
+      run: |
+        pacman -S --noconfirm mingw-w64-x86_64-python-pip
+        echo pacman ok
+        pip3 install pyyaml
+        pip3 list
+        python -c "import yaml"
+    - name: configure and build Suricata
+      run: |
+        uname -a
+        CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --prefix $HOME/suricata
+        make -j2
+        cp ../Makefile-windows.brim src/Makefile.brim
+        cd src
+        # re-link with some our modified Makefile that statically links those static libs that could be.
+        rm suricata && make -f Makefile.brim
+        cd ..
+        make install
+        # make install-conf doesn't work on windows as it has hard-coded to write to C:/Program Files/suricata.
+        mkdir -p $HOME/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config $HOME/suricata/etc/suricata
+        # add the .dlls that couldn't be statically linked.
+        mkdir $HOME/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} $HOME/suricata/dlls
+        ls -lR $HOME/suricata
+      working-directory: suricata
+    - name: add dlls to path
+      run: echo "$HOME/suricata/dlls" >> $GITHUB_PATH
+    - name: add brim files
+      run: |
+        cp brim-conf.yaml $HOME/suricata
+        cp suricatarunner.exe $HOME/suricata/suricatarunner.exe
+    - name: install rules
+      # We install rules this way rather than "make install-rules"
+      # because (1) the configure script on the github actions windows
+      # runner doesn't detect the presence of python yaml lib (though
+      # it does on a regular win/msys) and (2) the suricata-update
+      # python script fails with a certificate error when trying to connect
+      # to https://rules.emergingthreats.net.
+      run: |
+        mkdir -p /home/runneradmin/suricata/var/lib/suricata
+        pip install suricata-update
+        suricata-update --suricata-version 5.0.3 --url https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz \
+          --local /home/runneradmin/suricata/share/suricata/rules --suricata-conf /home/runneradmin/suricata/etc/suricata/suricata.yaml \
+          --data-dir /home/runneradmin/suricata/var/lib/suricata \
+          --no-test --no-reload
+      working-directory: suricata
+    - name: create zip
+      run: |
+        cd $HOME && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
+    - #if: github.ref == 'refs/heads/master'
+      name: Upload release artifacts to Google Cloud Storage bucket
+      run: |
+        gsutil cp $HOME/suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+
