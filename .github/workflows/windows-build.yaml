@@ -96,18 +96,17 @@ jobs:
       working-directory: suricata
     - name: add dlls to path
       run: echo "$HOME/suricata/dlls" >> $GITHUB_PATH
-    - name: install rules
-      run: |
-        pacman -S --noconfirm mingw-w64-x86_64-ca-certificates
-        pacman -S --noconfirm ca-certificates
-        # make install-rules doesn't work on github actions windows runner because configure doesn't detect the presence of python.
-        make -f Makefile.brim install-rules
-        #make install-rules
-      working-directory: suricata/src
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
         cp suricatarunner.exe $HOME/suricata/suricatarunner.exe
+    - name: install rules
+      run: |
+        curl -L -o emerging.rules.tar.gz https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz
+        /home/runneradmin/suricata/bin/suricata-update --suricata-version 5.0.3 --url file:///home/runneradmin/suricata/emerging.rules.tar.gz \
+          --local /home/runneradmin/suricata/share/suricata/rules --suricata-conf /home/runneradmin/suricata/etc/suricata/suricata.yaml \
+          --no-test --no-reload
+      working-directory: suricata
     - name: create zip
       run: |
         cd $HOME && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
