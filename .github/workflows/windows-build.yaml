@@ -100,6 +100,8 @@ jobs:
       run: |
         cp brim-conf.yaml $HOME/suricata
         cp suricatarunner.exe $HOME/suricata/suricatarunner.exe
+    - name: Use MSYS2's bash.exe in subsequent steps.
+      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: install rules
       # We install rules this way rather than "make install-rules"
       # because (1) the configure script on the github actions windows
@@ -109,9 +111,9 @@ jobs:
       # to https://rules.emergingthreats.net.
       run: |
         curl -L -o /home/runneradmin/suricata/emerging.rules.tar.gz https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz
-        ls -la
+        ls -la /home/runneradmin/suricata
         pwd
-        /home/runneradmin/suricata/bin/suricata-update --suricata-version 5.0.3 --url https://storage.googleapis.com/brimsec/suricata/emerging.rules.tar.gz \
+        /home/runneradmin/suricata/bin/suricata-update --suricata-version 5.0.3 --url file:///home/runneradmin/suricata/emerging.rules.tar.gz \
           --local /home/runneradmin/suricata/share/suricata/rules --suricata-conf /home/runneradmin/suricata/etc/suricata/suricata.yaml \
           --no-test --no-reload
       working-directory: suricata
