@@ -108,7 +108,7 @@ jobs:
       # python script fails with a certificate error when trying to connect
       # to https://rules.emergingthreats.net.
       run: |
-        curl -L -o emerging.rules.tar.gz https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz
+        curl -L -o /home/runneradmin/suricata/emerging.rules.tar.gz https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz
         ls -la
         pwd
         /home/runneradmin/suricata/bin/suricata-update --suricata-version 5.0.3 --url file:///home/runneradmin/suricata/emerging.rules.tar.gz \
