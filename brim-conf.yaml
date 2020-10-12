@@ -48,7 +48,7 @@ outputs:
   # Extensible Event Format (nicknamed EVE) event log in JSON format
   - eve-log:
       enabled: yes
-      community_id: yes
+      community-id: yes
       community-id-seed: 0
       filetype: regular #regular|syslog|unix_dgram|unix_stream|redis
       filename: eve.json
