@@ -114,7 +114,7 @@ jobs:
         ls -la /home/runneradmin/suricata
         ls -la $HOME/suricata
         pwd
-        mkdir /home/runneradmin/suricata/var/lib/suricata
+        mkdir -p /home/runneradmin/suricata/var/lib/suricata
         /home/runneradmin/suricata/bin/suricata-update --suricata-version 5.0.3 --url https://storage.googleapis.com/brimsec/suricata/emerging.rules.tar.gz \
           --local /home/runneradmin/suricata/share/suricata/rules --suricata-conf /home/runneradmin/suricata/etc/suricata/suricata.yaml \
           --data-dir /home/runneradmin/suricata/var/lib/suricata
