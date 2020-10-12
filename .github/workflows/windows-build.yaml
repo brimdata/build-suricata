@@ -99,6 +99,8 @@ jobs:
     - name: install rules
       run: |
         pacman -S --noconfirm mingw-w64-x86_64-ca-certificates
+        pacman -S --noconfirm ca-certificates
+        curl -L https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz
         # make install-rules doesn't work on github actions windows runner because configure doesn't detect the presence of python.
         make -f Makefile.brim install-rules
         #make install-rules
