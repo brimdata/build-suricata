@@ -41,6 +41,7 @@ jobs:
         dos2unix.exe libhtp/configure.ac
         dos2unix.exe libhtp/htp.pc.in
         dos2unix.exe libhtp/Makefile.am
+        sed -i 's/wpcap/pcap/g' ./configure.ac
         ./autogen.sh
     - name: get suricata-update
       run: |
