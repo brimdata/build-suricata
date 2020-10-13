@@ -22,6 +22,8 @@ jobs:
       run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: echo SHELL
       run: |
+        echo $HOME
+        pwd
         echo $SHELL
         which pacman
         which make
@@ -29,6 +31,8 @@ jobs:
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: echo SHELL
       run: |
+        echo $HOME
+        pwd
         echo $SHELL
         which pacman
         which make
@@ -101,14 +105,18 @@ jobs:
         cp suricatarunner.exe /home/runneradmin/suricata/suricatarunner.exe
     - name: echo SHELL
       run: |
-        echo $SHELL
+        env
+        echo --
         which pip3
-#    - name: Use MSYS2's bash.exe in subsequent steps.
-#      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
+        which pacman
+    - name: Use MSYS2's bash.exe in subsequent steps.
+      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: echo SHELL
       run: |
-        echo $SHELL
+        env
+        echo --
         which pip3
+        which pacman
     - name: install rules
       # We install rules this way rather than "make install-rules"
       # because (1) the configure script on the github actions windows
@@ -117,9 +125,15 @@ jobs:
       # python script fails with a certificate error when trying to connect
       # to https://rules.emergingthreats.net.
       run: |
-        #        pacman -Su --noconfirm python3-pip
-        #        pip3 install --upgrade pip
-        #        pip3 install pyyaml
+        pacman -Su --noconfirm python3-pip
+        pip3 install --upgrade pip
+        pip3 install pyyaml
+        echo --
+        env
+        echo --
+        which pip3
+        which pacman
+        echo --
         mkdir -p /home/runneradmin/suricata/var/lib/suricata
         pip3 install suricata-update
         suricata-update --suricata-version 5.0.3 --url https://rules.emergingthreats.net/open/suricata-5.0.3/emerging.rules.tar.gz \
@@ -130,10 +144,12 @@ jobs:
     - name: create zip
       run: |
         cd /home/runneradmin && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
+        which gsutil
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - #if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
+        which gsutil
         gsutil cp /home/runneradmin/suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
 
