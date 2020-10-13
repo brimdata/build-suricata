@@ -84,7 +84,7 @@ jobs:
     #           tar zxvf - --strip-components=1
     - name: configure and build Suricata
       run: |
-        pacman -S --noconfirm mingw-w64-x86_64-python-pip
+        #pacman -S --noconfirm mingw-w64-x86_64-python-pip
         CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --prefix /home/runneradmin/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
@@ -109,8 +109,8 @@ jobs:
         echo --
         which pip3
         which pacman
-    - name: Use MSYS2's bash.exe in subsequent steps.
-      run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
+    #- name: Use MSYS2's bash.exe in subsequent steps.
+    #  run: echo "C:\msys64\usr\bin" >> $GITHUB_PATH
     - name: echo SHELL
       run: |
         env
