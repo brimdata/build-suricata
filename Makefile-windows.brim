@@ -1,12 +1,15 @@
 include Makefile
 
-LIBS := $(filter-out -ljansson -llz4 -lpcre -lplc4 -lplds4 -lyaml -lz,$(LIBS))
+LIBS := $(filter-out -lpcap -ljansson -llz4 -lpcre -lplc4 -lplds4 -lyaml -lz,$(LIBS))
 
 nspr_libs = /mingw64/lib/libnspr4_s.a /mingw64/lib/libplc4_s.a /mingw64/lib/libplds4_s.a
 
 suricata$(EXEEXT): $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata_DEPENDENCIES)
 	@rm -f suricata$(EXEEXT)
-	@echo "$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) $(LIBS) $(nspr_libs)"
+	@echo "$(AM_V_CCLD)$(suricata_LINK)"
+	@echo "$(suricata_OBJECTS)"
+	@echo "$(suricata_LDADD)"
+	@echo "$(LIBS) $(nspr_libs)"
 	$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) $(LIBS) $(nspr_libs) /mingw64/lib/libpcre.a /mingw64/lib/libjansson.a /mingw64/lib/liblz4.a /mingw64/lib/libpcap.a /mingw64/lib/libyaml.a /mingw64/lib/libz.a
 
 
