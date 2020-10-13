@@ -1,6 +1,6 @@
 include Makefile
 
-LIBS := $(filter-out -lpcap -ljansson -llz4 -lpcre -lplc4 -lplds4 -lyaml -lz,$(LIBS))
+LIBS := $(filter-out -ljansson -llz4 -lpcre -lplc4 -lplds4 -lyaml -lz,$(LIBS))
 
 nspr_libs = /mingw64/lib/libnspr4_s.a /mingw64/lib/libplc4_s.a /mingw64/lib/libplds4_s.a
 
