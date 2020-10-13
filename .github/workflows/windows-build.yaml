@@ -66,9 +66,6 @@ jobs:
         dos2unix.exe libhtp/htp.pc.in
         dos2unix.exe libhtp/Makefile.am
         ./autogen.sh
-        # hack to make configure mis-detect -DFORTIFY_SOURCE as being unavailable.
-        # sed -i 's/FORTIFY_SOURCE/FORTIFY_SOURCE_DISABLE/g' ./configure
-        # sed -i 's/FORTIFY_SOURCE/FORTIFY_SOURCE_DISABLE/g' ./libhtp/configure
     - name: get suricata-update
       run: |
         curl -L \
@@ -145,8 +142,8 @@ jobs:
       run: |
         cd /home/runneradmin && zip -r suricata-v5.0.3-brim5.$(go env GOOS)-$(go env GOARCH).zip suricata
         which gsutil
-    - name: Add mingw64 bin path
-      run: echo "/mingw64/bin" >> $GITHUB_PATH
+#    - name: Add mingw64 bin path
+#      run: echo "/mingw64/bin" >> $GITHUB_PATH
     - #if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
