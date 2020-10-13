@@ -38,7 +38,16 @@ jobs:
       working-directory: suricata/suricata-update
     - name: configure and build
       # --disable-gccmatch-native is to avoid "illegal instruction" crashes when running on a different x86_64 CPU.
-      run: cd suricata && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
+      run: cd suricata && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+    - name: build static binary
+      run: |
+        cp Makefile-linux.brim suricata/src/Makefile.brim
+        cd suricata/src
+        # remove the dynamically-linked suricata and re-link statically using our Makefile
+        rm suricata
+        make -f Makefile.brim
+        cd ..
+        make install-full
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
