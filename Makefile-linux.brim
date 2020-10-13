@@ -1,0 +1,12 @@
+include Makefile
+
+LIBS := $(filter-out -lmagic -lrt -ldl -lcap-ng -lnet -lz -llz4 -lpcap -ljansson -lpcre -lyaml,$(LIBS))
+
+suricata_LDADD := $(filter-out -lrt,$(suricata_LDADD))
+
+static_libs = /usr/lib/x86_64-linux-gnu/libcap-ng.a /usr/lib/x86_64-linux-gnu/libjansson.a /usr/lib/x86_64-linux-gnu/libmagic.a /usr/lib/x86_64-linux-gnu/libnet.a /usr/lib/x86_64-linux-gnu/libpcap.a /usr/lib/x86_64-linux-gnu/libpcre.a  /usr/lib/x86_64-linux-gnu/librt.a /usr/lib/x86_64-linux-gnu/libyaml.a /usr/lib/x86_64-linux-gnu/libz.a /usr/lib/x86_64-linux-gnu/liblz4.a
+
+suricata$(EXEEXT): $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata_DEPENDENCIES)
+	@rm -f suricata$(EXEEXT)
+	$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) $(static_libs) $(LIBS)
+

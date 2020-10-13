@@ -23,7 +23,7 @@ jobs:
         sudo apt-get -y install libpcre3 libpcre3-dev build-essential autoconf \
         automake libtool libpcap-dev libnet1-dev libyaml-0-2 libyaml-dev zlib1g zlib1g-dev \
         libcap-ng-dev libcap-ng0 make libmagic-dev libjansson-dev libjansson4 pkg-config libnss3-dev \
-        libnspr4-dev liblz4-dev zip
+        libnspr4-dev liblz4-dev zip rustc cargo
     - name: clone Suricata and autogen
       run: |
         git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
@@ -38,7 +38,16 @@ jobs:
       working-directory: suricata/suricata-update
     - name: configure and build
       # --disable-gccmatch-native is to avoid "illegal instruction" crashes when running on a different x86_64 CPU.
-      run: cd suricata && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2 && make install-full
+      run: cd suricata && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+    - name: build static binary
+      run: |
+        cp Makefile-linux.brim suricata/src/Makefile.brim
+        cd suricata/src
+        # remove the dynamically-linked suricata and re-link statically using our Makefile
+        rm suricata
+        make -f Makefile.brim suricata
+        cd ..
+        make install-full
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
@@ -48,4 +57,4 @@ jobs:
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim8.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim8.linux-amd64.zip gs://brimsec/suricata/PR-tmp-suricata-v5.0.3-brim8-static.linux-amd64.zip
