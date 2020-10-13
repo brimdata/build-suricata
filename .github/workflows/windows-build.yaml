@@ -17,8 +17,6 @@ jobs:
     - uses: actions/checkout@v2
     - name: Use MSYS2's bash.exe in subsequent steps.
       run: echo 'C:\msys64\usr\bin' >> $GITHUB_PATH
-    - name: try build-libpcap script
-      run: ./build-libpcap
     - name: Add mingw64 bin path
       run: echo "/mingw64/bin" >> $GITHUB_PATH
     - name: Setup Google Cloud Platform
@@ -35,13 +33,12 @@ jobs:
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
     - name: clone Suricata and autogen
       run: |
-        git clone --depth 1 --branch brim-suricata-5.0.3-windows-tz-fix https://github.com/brimsec/suricata.git
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         dos2unix.exe libhtp/configure.ac
         dos2unix.exe libhtp/htp.pc.in
         dos2unix.exe libhtp/Makefile.am
-        sed -i 's/wpcap/pcap/g' ./configure.ac
         ./autogen.sh
     - name: get suricata-update
       run: |
@@ -49,6 +46,8 @@ jobs:
               https://github.com/OISF/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
+    - name: build libpcap
+      run: ./build-libpcap
     - name: configure and build
       run: |
         CFLAGS=-DPCRE_STATIC= ./configure --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata

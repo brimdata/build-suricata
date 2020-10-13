@@ -1,8 +1,5 @@
 #!/bin/sh -ex
 
-export CMAKE_CXX_COMPILER_LAUNCHER=ccache
-export CMAKE_C_COMPILER_LAUNCHER=ccache
-
 install_libpcap() {
     install_prefix=${1:?'install_prefix required'}
     mkdir libpcap
@@ -10,21 +7,16 @@ install_libpcap() {
         tar -xzf - -C libpcap --strip-components 1
     cmake -D CMAKE_INSTALL_PREFIX="$install_prefix" -D ENABLE_REMOTE=OFF \
         -G Ninja -S libpcap -B libpcap/build
-    ccache -z
     ninja -C libpcap/build
-    ccache -s
     $sudo ninja -C libpcap/build install
     rm -r libpcap
 }
 
-export CMAKE_GENERATOR='MSYS Makefiles'  # For Zeek plugins.
-export MSYS=winsymlinks:nativestrict
-export PATH=/mingw64/bin:$PATH
-
 pacman -S --needed --noconfirm \
-       bison flex make mingw-w64-x86_64-ccache \
+       bison flex make \
        mingw-w64-x86_64-cmake mingw-w64-x86_64-gcc \
        mingw-w64-x86_64-libmaxminddb mingw-w64-x86_64-ninja \
        mingw-w64-x86_64-openssl python-pip zip
+
 install_libpcap /mingw64
-ls -lrt /mingw64
+
