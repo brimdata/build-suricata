@@ -31,8 +31,11 @@ jobs:
         pacman -Su --noconfirm \
           mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
+
     - name: build libpcap
-      run: ./build-libpcap
+      run: |
+        pacman -S --needed --noconfirm bison flex mingw-w64-x86_64-cmake
+        ./build-libpcap
     - name: clone Suricata and autogen
       run: |
         git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git

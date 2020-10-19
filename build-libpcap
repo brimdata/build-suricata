@@ -12,8 +12,5 @@ install_libpcap() {
     rm -r libpcap
 }
 
-pacman -S --needed --noconfirm \
-       bison flex mingw-w64-x86_64-cmake
-
 install_libpcap /mingw64
 
