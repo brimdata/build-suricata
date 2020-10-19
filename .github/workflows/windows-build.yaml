@@ -31,6 +31,8 @@ jobs:
         pacman -Su --noconfirm \
           mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
+    - name: build libpcap
+      run: ./build-libpcap
     - name: clone Suricata and autogen
       run: |
         git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
@@ -46,8 +48,6 @@ jobs:
               https://github.com/OISF/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
-    - name: build libpcap
-      run: ./build-libpcap
     - name: configure and build
       run: |
         CFLAGS=-DPCRE_STATIC= ./configure --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
