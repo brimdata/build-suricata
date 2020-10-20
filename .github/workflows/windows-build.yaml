@@ -28,16 +28,18 @@ jobs:
         service_account_key: ${{ secrets.GCLOUD_CREDENTIAL_BRIMSEC_BUCKET }}
     - name: install deps
       run: |
-        choco install winpcap --no-progress
-        curl -o npcap-sdk-1.01.zip https://nmap.org/npcap/dist/npcap-sdk-1.01.zip
-        7z x -y -o'c:\npcap\' npcap-sdk-1.01.zip
         pacman -Su --noconfirm libyaml-devel pcre-devel jansson-devel
         pacman -Su --noconfirm \
           mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja \
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
+
+    - name: build libpcap
+      run: |
+        pacman -S --needed --noconfirm bison flex mingw-w64-x86_64-cmake
+        ./build-libpcap
     - name: clone Suricata and autogen
       run: |
-        git clone --depth 1 --branch brim-suricata-5.0.3-windows-tz-fix https://github.com/brimsec/suricata.git
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         dos2unix.exe libhtp/configure.ac
@@ -52,7 +54,7 @@ jobs:
       working-directory: suricata/suricata-update
     - name: configure and build
       run: |
-        CFLAGS=-DPCRE_STATIC= ./configure --with-libpcap-libraries=/c/npcap/Lib/x64 --with-libpcap-includes=/c/npcap/Include --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
+        CFLAGS=-DPCRE_STATIC= ./configure --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
@@ -66,7 +68,7 @@ jobs:
         # make install-conf doesn't work on windows as it has hard-coded to write to C:/Program Files/suricata.
         mkdir -p /home/runneradmin/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config /home/runneradmin/suricata/etc/suricata
         # add the .dlls that couldn't be statically linked.
-        mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} /home/runneradmin/suricata/dlls
+        mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{pcap.dll,libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} /home/runneradmin/suricata/dlls
         # We install rules this way rather than "make install-rules"
         # because (1) the configure script on the github actions windows
         # runner doesn't detect the presence of python yaml lib (though
@@ -94,9 +96,9 @@ jobs:
         cp suricatarunner.exe /home/runneradmin/suricata/suricatarunner.exe
     - name: create zip
       run: |
-        cd /home/runneradmin && zip -r suricata-v5.0.3-brim7.$(go env GOOS)-$(go env GOARCH).zip suricata
+        cd /home/runneradmin && zip -r suricata-v5.0.3-brim8.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp /home/runneradmin/suricata-v5.0.3-brim7.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp /home/runneradmin/suricata-v5.0.3-brim8.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
 

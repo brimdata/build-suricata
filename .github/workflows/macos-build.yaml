@@ -57,8 +57,8 @@ jobs:
         mkdir -p $HOME/suricata/share/file
         cp /usr/local/Cellar/libmagic/$version/share/misc/magic.mgc $HOME/suricata/share/file
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim7.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim8.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim7.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim8.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/

@@ -1,0 +1,16 @@
+#!/bin/sh -ex
+
+install_libpcap() {
+    install_prefix=${1:?'install_prefix required'}
+    mkdir libpcap
+    wget -qO - https://github.com/the-tcpdump-group/libpcap/archive/libpcap-1.9.1.tar.gz |
+        tar -xzf - -C libpcap --strip-components 1
+    cmake -D CMAKE_INSTALL_PREFIX="$install_prefix" -D ENABLE_REMOTE=OFF \
+        -G Ninja -S libpcap -B libpcap/build
+    ninja -C libpcap/build
+    $sudo ninja -C libpcap/build install
+    rm -r libpcap
+}
+
+install_libpcap /mingw64
+
