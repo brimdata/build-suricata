@@ -1,9 +1,24 @@
 include Makefile
 
-LIBS := $(filter-out -lmagic -lrt -lcap-ng -lnet -lz -lpcap -ljansson -lpcre -lyaml,$(LIBS))
-suricata_OBJECTS := $(filter-out -lz,$(suricata_OBJECTS))
+#LIBS := $(filter-out -lplc4 -lplds4 -lnspr4 -lnss3 -lnssutil3 -lmagic -lrt -ldl -lcap-ng -lnet -lz -lpcap -ljansson -lpcre -lyaml,$(LIBS))
+LIBS := $(filter-out -lmagic -lrt -ldl -lcap-ng -lnet -lz -llz4 -lpcap -ljansson -lpcre -lyaml,$(LIBS))
 
-static_libs = /usr/lib/x86_64-linux-gnu/libcap-ng.a /usr/lib/x86_64-linux-gnu/libjansson.a /usr/lib/x86_64-linux-gnu/libmagic.a /usr/lib/x86_64-linux-gnu/libnet.a /usr/lib/x86_64-linux-gnu/libpcap.a /usr/lib/x86_64-linux-gnu/libpcre.a  /usr/lib/x86_64-linux-gnu/librt.a /usr/lib/x86_64-linux-gnu/libyaml.a  /usr/lib/x86_64-linux-gnu/libz.a
+suricata_LDADD := $(filter-out -lrt,$(suricata_LDADD))
+
+
+static_libs = /usr/lib/x86_64-linux-gnu/libcap-ng.a /usr/lib/x86_64-linux-gnu/libjansson.a /usr/lib/x86_64-linux-gnu/libmagic.a /usr/lib/x86_64-linux-gnu/libnet.a /usr/lib/x86_64-linux-gnu/libpcap.a /usr/lib/x86_64-linux-gnu/libpcre.a  /usr/lib/x86_64-linux-gnu/librt.a /usr/lib/x86_64-linux-gnu/libyaml.a /usr/lib/x86_64-linux-gnu/libz.a /usr/lib/x86_64-linux-gnu/liblz4.a
+
+# nspr4_libs = /usr/lib/x86_64-linux-gnu/libnspr4.a /usr/lib/x86_64-linux-gnu/libplds4.a /usr/lib/x86_64-linux-gnu/libplc4.a
+
+# nss3_lib_dir = $(HOME)/nss-3.58/dist/Linux5.4_x86_64_cc_glibc_PTH_64_OPT.OBJ/lib
+
+# nss3_libs = $(nss3_lib_dir)/libpkcs12.a $(nss3_lib_dir)/libpkixchecker.a $(nss3_lib_dir)/libcrmf.a $(nss3_lib_dir)/libnsssysinit.a $(nss3_lib_dir)/libnssutil.a $(nss3_lib_dir)/libpkixpki.a $(nss3_\
+# lib_dir)/libnssckfw.a $(nss3_lib_dir)/libsoftokn.a $(nss3_lib_dir)/libcpputil.a $(nss3_lib_dir)/libpkixsystem.a $(nss3_lib_dir)/libpkixmodule.a $(nss3_lib_dir)/libcerthi.a $(nss3_lib_dir)/libnssdb\
+# m.a $(nss3_lib_dir)/libpkixresults.a $(nss3_lib_dir)/libpkixstore.a $(nss3_lib_dir)/libfreebl.a $(nss3_lib_dir)/libpkixcrlsel.a $(nss3_lib_dir)/libpk11wrap.a $(nss3_lib_dir)/libsmime.a $(nss3_lib_\
+# dir)/libcertdb.a $(nss3_lib_dir)/libsectool.a $(nss3_lib_dir)/libgtest.a $(nss3_lib_dir)/libjar.a $(nss3_lib_dir)/libpkixparams.a $(nss3_lib_dir)/libdbm.a $(nss3_lib_dir)/libgtestutil.a $(nss3_lib\
+# _dir)/libpkixutil.a $(nss3_lib_dir)/libnssdev.a $(nss3_lib_dir)/libpkcs7.a $(nss3_lib_dir)/libnssb.a $(nss3_lib_dir)/libcryptohi.a $(nss3_lib_dir)/libpkixtop.a $(nss3_lib_dir)/libnsspki.a $(nss3_l\
+# ib_dir)/libpkixcertsel.a $(nss3_lib_dir)/libnss.a
+
 
 suricata$(EXEEXT): $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata_DEPENDENCIES)
 	@rm -f suricata$(EXEEXT)

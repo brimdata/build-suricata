@@ -24,20 +24,20 @@ jobs:
         automake libtool libpcap-dev libnet1-dev libyaml-0-2 libyaml-dev zlib1g zlib1g-dev \
         libcap-ng-dev libcap-ng0 make libmagic-dev libjansson-dev libjansson4 pkg-config libnss3-dev \
         libnspr4-dev liblz4-dev zip rustc cargo
-    - name: build static libs for nss and nspr
-      run: |
-        curl -o nspr-4.29.tar.gz -L https://archive.mozilla.org/pub/nspr/releases/v4.29/src/nspr-4.29.tar.gz
-        curl -o nss-3.58.tar.gz -L https://ftp.mozilla.org/pub/security/nss/releases/NSS_3_58_RTM/src/nss-3.58.tar.gz
-        tar xzf nspr-4.29.tar.gz
-        tar xzf nss-3.58.tar.gz
-        pwd
-        echo $HOME
-        cd nspr-4.29/nspr
-        ./configure --enable-64bit --prefix=$HOME/nspr-4.29
-        make
-        make install
-        cd ../../nss-3.58/nss
-        make all USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$HOME/nspr-4.29/include/nspr NSPR_LIB_DIR=$HOME/nspr-4.29/lib
+    # - name: build static libs for nss and nspr
+    #   run: |
+    #     curl -o nspr-4.29.tar.gz -L https://archive.mozilla.org/pub/nspr/releases/v4.29/src/nspr-4.29.tar.gz
+    #     curl -o nss-3.58.tar.gz -L https://ftp.mozilla.org/pub/security/nss/releases/NSS_3_58_RTM/src/nss-3.58.tar.gz
+    #     tar xzf nspr-4.29.tar.gz
+    #     tar xzf nss-3.58.tar.gz
+    #     pwd
+    #     echo $HOME
+    #     cd nspr-4.29/nspr
+    #     ./configure --enable-64bit --prefix=$HOME/nspr-4.29
+    #     make
+    #     make install
+    #     cd ../../nss-3.58/nss
+    #     make all USE_64=1 BUILD_OPT=1 NSPR_INCLUDE_DIR=$HOME/nspr-4.29/include/nspr NSPR_LIB_DIR=$HOME/nspr-4.29/lib
     - name: clone Suricata and autogen
       run: |
         git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
@@ -59,7 +59,7 @@ jobs:
         cd suricata/src
         # remove the dynamically-linked suricata and re-link statically using our Makefile
         rm suricata
-        make -f Makefile.brim
+        make -f Makefile.brim suricata
         cd ..
         make install-full
     - name: add brim files
@@ -71,5 +71,4 @@ jobs:
     - if: #github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        #gsutil cp $HOME/suricata-v5.0.3-brim8.linux-amd64.zip gs://brimsec/suricata/
-        gsutil cp $HOME/suricata-v5.0.3-brim8.linux-amd64.zip gs://brimsec/suricata/PR-tmp-suricata-v5.0.3-brim8.linux-amd64.zip
+        gsutil cp $HOME/suricata-v5.0.3-brim8.linux-amd64.zip gs://brimsec/suricata/PR-tmp-suricata-v5.0.3-brim8-static.linux-amd64.zip
