@@ -12,5 +12,20 @@ install_libpcap() {
     rm -r libpcap
 }
 
-install_libpcap /mingw64
+# Compile a recent libpcap since the ones we get in Ubuntu 18.04 and in mingw are
+# old and hits https://github.com/brimsec/zeek/issues/17.
+case $(uname) in
+    Linux)
+        sudo=sudo
+        install_libpcap /usr
+        ;;
+    *_NT-*)
+        install_libpcap /mingw64
+        ;;
+    *)
+        echo "unknown OS: $(uname)" >&2
+        exit 1
+        ;;
+esac
+
 
