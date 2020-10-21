@@ -21,9 +21,12 @@ jobs:
       run: |
         sudo apt-get update
         sudo apt-get -y install libpcre3 libpcre3-dev build-essential autoconf \
-        automake libtool libpcap-dev libnet1-dev libyaml-0-2 libyaml-dev zlib1g zlib1g-dev \
-        libcap-ng-dev libcap-ng0 make libmagic-dev libjansson-dev libjansson4 pkg-config libnss3-dev \
+        automake libtool ninja-build libnet1-dev libyaml-0-2 libyaml-dev zlib1g zlib1g-dev \
+         libcap-ng-dev libcap-ng0 make libmagic-dev libjansson-dev libjansson4 pkg-config libnss3-dev \
         libnspr4-dev liblz4-dev zip rustc cargo
+    - name: build libpcap
+      run: |
+        ./build-libpcap
     - name: clone Suricata and autogen
       run: |
         git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
