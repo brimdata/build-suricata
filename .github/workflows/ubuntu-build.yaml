@@ -4,7 +4,8 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - tag-versioning
+      #- master
 
 jobs:
   build:
@@ -56,8 +57,14 @@ jobs:
         cp brim-conf.yaml $HOME/suricata
         cp suricatarunner-linux $HOME/suricata/suricatarunner
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim9.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: |
+        ZIPNAME=$PWD/suricata-$(git describe --always --tags).$(go env GOOS)-$(go env GOARCH).zip
+        cd $HOME && zip -r $ZIPNAME suricata)
+    - uses: actions/upload-artifact@v2
+      with:
+        name: ubuntu
+        path: suricata-*.zip
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim9.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp suricata-*.zip gs://brimsec/suricata/
