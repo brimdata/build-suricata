@@ -68,7 +68,7 @@ jobs:
         # make install-conf doesn't work on windows as it has hard-coded to write to C:/Program Files/suricata.
         mkdir -p /home/runneradmin/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config /home/runneradmin/suricata/etc/suricata
         # add the .dlls that couldn't be statically linked.
-        mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{pcap.dll,libnspr4.dll,libplc4.dll,libplds4.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll} /home/runneradmin/suricata/dlls
+        mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{pcap.dll,libnspr4.dll,libplc4.dll,libplds4.dll,libssp-0.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll,zlib1.dll} /home/runneradmin/suricata/dlls
         # We install rules this way rather than "make install-rules"
         # because (1) the configure script on the github actions windows
         # runner doesn't detect the presence of python yaml lib (though
@@ -96,9 +96,9 @@ jobs:
         cp suricatarunner.exe /home/runneradmin/suricata/suricatarunner.exe
     - name: create zip
       run: |
-        cd /home/runneradmin && zip -r suricata-v5.0.3-brim9.$(go env GOOS)-$(go env GOARCH).zip suricata
+        cd /home/runneradmin && zip -r suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp /home/runneradmin/suricata-v5.0.3-brim9.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp /home/runneradmin/suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip
 
