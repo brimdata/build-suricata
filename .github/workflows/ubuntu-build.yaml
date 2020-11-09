@@ -23,7 +23,9 @@ jobs:
         sudo apt-get -y install libpcre3 libpcre3-dev build-essential autoconf \
         automake libtool ninja-build libnet1-dev libyaml-0-2 libyaml-dev zlib1g zlib1g-dev \
          libcap-ng-dev libcap-ng0 make libmagic-dev libjansson-dev libjansson4 pkg-config libnss3-dev \
-        libnspr4-dev liblz4-dev zip rustc cargo
+        libnspr4-dev liblz4-dev zip rustc cargo python3-setuptools
+        pip3 install wheel
+        pip3 install pyinstaller
     - name: build libpcap
       run: |
         ./build-libpcap
@@ -36,7 +38,7 @@ jobs:
     - name: get suricata-update
       run: |
         curl -L \
-              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
+              https://github.com/brimsec/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
     - name: configure and build
@@ -51,13 +53,19 @@ jobs:
         make -f Makefile.brim suricata
         cd ..
         make install-full
+    - name: freeze suricata-update
+      run: |
+        cd suricata/suricata-update
+        ~/.local/bin/pyinstaller --onefile bin/suricata-update
+        cp dist/suricata-update $HOME/suricata/bin
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
+        cp suricataupdater $HOME/suricata
         cp suricatarunner-linux $HOME/suricata/suricatarunner
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim11.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim10.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim11.linux-amd64.zip gs://brimsec/suricata/

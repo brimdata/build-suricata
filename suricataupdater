@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+
+echo "
+data-directory: $dir/var/lib/suricata
+dist-rule-directory: $dir/share/suricata/rules
+" >> $dir/update.yaml
+
+exec "$dir/bin/suricata-update" --suricata "$dir/bin/suricata" --suricata-conf "$dir/brim-conf.yaml" --conf $dir/update.yaml --no-test --no-reload
