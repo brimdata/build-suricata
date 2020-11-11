@@ -46,12 +46,6 @@ jobs:
         dos2unix.exe libhtp/htp.pc.in
         dos2unix.exe libhtp/Makefile.am
         ./autogen.sh
-    - name: get suricata-update
-      run: |
-        curl -L \
-              https://github.com/OISF/suricata-update/archive/master.tar.gz | \
-              tar zxvf - --strip-components=1
-      working-directory: suricata/suricata-update
     - name: configure and build
       run: |
         CFLAGS=-DPCRE_STATIC= ./configure --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
@@ -89,16 +83,24 @@ jobs:
       with:
         go-version: 1.14
     - name: build runner
-      run: go build -o suricatarunner.exe suricatarunner-windows.go
+      run: |
+        go build -o suricatarunner.exe go/runner/main.go
+        go build -o suricataupdater.exe go/updater/main.go
     - name: add brim files
       run: |
         cp brim-conf.yaml /home/runneradmin/suricata
-        cp suricatarunner.exe /home/runneradmin/suricata/suricatarunner.exe
+        cp suricatarunner.exe suricataupdater.exe /home/runneradmin/suricata/
+    - name: freeze suricata-update
+      run: |
+        curl -L https://github.com/brimsec/suricata-update/archive/fix-windows.tar.gz | tar zxvf - --strip-components=1
+        pip3 install pyinstaller
+        pyinstaller --onefile bin\suricata-update
+        cp dist\suricata-update.exe C:\msys64\home\runneradmin\suricata\bin
+      shell: cmd
     - name: create zip
       run: |
-        cd /home/runneradmin && zip -r suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip suricata
+        cd /home/runneradmin && zip -r suricata-v5.0.3-brim11.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp /home/runneradmin/suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim10.$(go env GOOS)-$(go env GOARCH).zip
-
+        gsutil cp /home/runneradmin/suricata-v5.0.3-brim11.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim11.$(go env GOOS)-$(go env GOARCH).zip

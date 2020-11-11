@@ -1,9 +1,6 @@
-// +build windows
-
-// This tool executes suricata on windows, constructing the required SURICATA*
-// environment variables.  It embeds knowledge of the locations of the suricata
-// executable and suricata script locations in the expanded 'zdeps/suricata' directory
-// inside a Brim installation.
+// This tool executes suricata on windows.  It embeds knowledge of the locations of the suricata
+// executable and suricata paths in the expanded 'zdeps/suricata'
+// directory inside a Brim installation.
 package main
 
 import (
