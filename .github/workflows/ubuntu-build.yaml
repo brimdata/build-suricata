@@ -55,9 +55,9 @@ jobs:
         make install-full
     - name: freeze suricata-update
       run: |
-        cd suricata/suricata-update
         ~/.local/bin/pyinstaller --onefile bin/suricata-update
         cp dist/suricata-update $HOME/suricata/bin
+      working-directory: suricata/suricata-update
     - name: add brim files
       run: |
         cp brim-conf.yaml $HOME/suricata
