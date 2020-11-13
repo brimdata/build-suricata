@@ -4,7 +4,6 @@ dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
 cp $dir/brim-conf.yaml $dir/brim-conf-run.yaml
 echo "
-default-rule-path: $dir/share/suricata/rules
 rule-files:
   - $dir/var/lib/suricata/rules/suricata.rules
 " >> $dir/brim-conf-run.yaml

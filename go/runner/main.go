@@ -31,7 +31,6 @@ func zdepsSuricataDirectory() (string, error) {
 
 func makeConfig(baseDir, source, dest string) error {
 	ruleConfig := fmt.Sprintf(`
-default-rule-path: %s\share\suricata\rules
 rule-files:
   - %s\var\lib\suricata\rules\suricata.rules
 `, baseDir, baseDir)
