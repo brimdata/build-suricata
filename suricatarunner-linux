@@ -2,11 +2,24 @@
 
 dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
 
-cp $dir/brim-conf.yaml $dir/brim-conf-run.yaml
-echo "
-default-rule-path: $dir/share/suricata/rules
-rule-files:
-  - $dir/var/lib/suricata/rules/suricata.rules
-" >> $dir/brim-conf-run.yaml
+if [ -z "$BRIM_SURICATA_USER_DIR" ]; then
+    userdir="$dir"
+    ruledir="$dir/var/lib/suricata/rules"
+else
+    userdir="$BRIM_SURICATA_USER_DIR"
+    ruledir="$userdir/rules"
+    if [ ! -d "$ruledir" ]; then
+        mkdir -p "$ruledir"
+    fi
+    if [ ! -f "$ruledir/suricata.rules" ]; then
+        cp "$dir/var/lib/suricata/rules/suricata.rules" "$ruledir"
+    fi
+fi
 
-exec "$dir/bin/suricata" -c "$dir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r -
+cp $dir/brim-conf.yaml $userdir/brim-conf-run.yaml
+echo "
+rule-files:
+  - $ruledir/suricata.rules
+" >> $userdir/brim-conf-run.yaml
+
+exec "$dir/bin/suricata" -c "$userdir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r -
