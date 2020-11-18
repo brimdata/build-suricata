@@ -33,7 +33,7 @@ func makeConfig(baseDir, source, dest string) error {
 	ruleConfig := fmt.Sprintf(`
 rule-files:
   - %s\var\lib\suricata\rules\suricata.rules
-`, baseDir, baseDir)
+`, baseDir)
 
 	input, err := ioutil.ReadFile(filepath.Join(baseDir, source))
 	if err != nil {
