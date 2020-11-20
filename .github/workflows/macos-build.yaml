@@ -36,7 +36,7 @@ jobs:
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
     - name: configure and build
-      run: cd suricata && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+      run: cd suricata && ./configure --disable-gccmarch-native  --disable-shared --enable-static --prefix=$HOME/suricata && make -j2
     - name: build static binary
       run: |
         cp Makefile-macOS.brim suricata/src/Makefile.brim
