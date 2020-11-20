@@ -48,7 +48,7 @@ jobs:
         ./autogen.sh
     - name: configure and build
       run: |
-        CFLAGS=-DPCRE_STATIC= ./configure --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
+        CFLAGS=-DPCRE_STATIC= ./configure --disable-gccmarch-native --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
