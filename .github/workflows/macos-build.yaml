@@ -36,7 +36,7 @@ jobs:
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
     - name: configure and build
-      run: cd suricata && ./configure --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+      run: cd suricata && ./configure --disable-gccmarch-native  --disable-shared --enable-static --prefix=$HOME/suricata && make -j2
     - name: build static binary
       run: |
         cp Makefile-macOS.brim suricata/src/Makefile.brim
@@ -63,8 +63,8 @@ jobs:
         mkdir -p $HOME/suricata/share/file
         cp /usr/local/Cellar/libmagic/$version/share/misc/magic.mgc $HOME/suricata/share/file
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim13.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim14.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim13.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim14.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/

@@ -43,7 +43,7 @@ jobs:
       working-directory: suricata/suricata-update
     - name: configure and build
       # --disable-gccmatch-native is to avoid "illegal instruction" crashes when running on a different x86_64 CPU.
-      run: cd suricata && ./configure --disable-gccmarch-native --enable-static=yes --enable-shared=no --prefix=$HOME/suricata && make -j2
+      run: cd suricata && ./configure --disable-gccmarch-native  --disable-shared --enable-static --prefix=$HOME/suricata && make -j2
     - name: build static binary
       run: |
         cp Makefile-linux.brim suricata/src/Makefile.brim
@@ -64,8 +64,8 @@ jobs:
         cp suricataupdater $HOME/suricata
         cp suricatarunner-linux $HOME/suricata/suricatarunner
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim13.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim14.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim13.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim14.linux-amd64.zip gs://brimsec/suricata/

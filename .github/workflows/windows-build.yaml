@@ -48,7 +48,7 @@ jobs:
         ./autogen.sh
     - name: configure and build
       run: |
-        CFLAGS=-DPCRE_STATIC= ./configure --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
+        CFLAGS=-DPCRE_STATIC= ./configure --disable-gccmarch-native --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
@@ -99,8 +99,8 @@ jobs:
       shell: cmd
     - name: create zip
       run: |
-        cd /home/runneradmin && zip -r suricata-v5.0.3-brim13.$(go env GOOS)-$(go env GOARCH).zip suricata
+        cd /home/runneradmin && zip -r suricata-v5.0.3-brim14.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp /home/runneradmin/suricata-v5.0.3-brim13.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim13.$(go env GOOS)-$(go env GOARCH).zip
+        gsutil cp /home/runneradmin/suricata-v5.0.3-brim14.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim14.$(go env GOOS)-$(go env GOARCH).zip
