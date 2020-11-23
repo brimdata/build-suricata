@@ -16,10 +16,11 @@ else
     fi
 fi
 
-cp $dir/brim-conf.yaml $userdir/brim-conf-run.yaml
+cp "$dir/brim-conf.yaml" "$userdir/brim-conf-run.yaml"
+
 echo "
 rule-files:
   - $ruledir/suricata.rules
-" >> $userdir/brim-conf-run.yaml
+" >> "$userdir/brim-conf-run.yaml"
 
 exec "$dir/bin/suricata" -c "$userdir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r -
