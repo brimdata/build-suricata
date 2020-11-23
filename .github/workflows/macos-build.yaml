@@ -46,6 +46,37 @@ jobs:
         make -f Makefile.brim
         cd ..
         make install-full
+    - name: add and fix dylibs
+      run: |
+        cd $HOME/suricata/bin
+
+        nss_version=$(brew list --versions nss | cut -d ' ' -f 2)
+        nspr_version=$(brew list --versions nspr | cut -d ' ' -f 2)
+
+        cp /usr/local/lib/libfreebl3.dylib .
+        cp /usr/local/lib/libsoftokn3.dylib .
+        cp /usr/local/lib/libnssutil3.dylib .
+        cp /usr/local/opt/nspr/lib/libnspr4.dylib .
+        cp /usr/local/opt/nspr/lib/libplds4.dylib .
+        cp /usr/local/opt/nspr/lib/libplc4.dylib .
+
+        chmod +w *.dylib
+
+        install_name_tool libsoftokn3.dylib -change /usr/local/Cellar/nss/"$nss_version"/lib/libnssutil3.dylib @executable_path/libnssutil3.dylib
+        install_name_tool libsoftokn3.dylib -change /usr/local/opt/nspr/lib/libplc4.dylib @executable_path/libplc4.dylib
+        install_name_tool libsoftokn3.dylib -change /usr/local/opt/nspr/lib/libplds4.dylib @executable_path/libplds4.dylib
+        install_name_tool libsoftokn3.dylib -change /usr/local/opt/nspr/lib/libnspr4.dylib @executable_path/libnspr4.dylib
+
+        install_name_tool libnssutil3.dylib -change /usr/local/opt/nspr/lib/libplc4.dylib @executable_path/libplc4.dylib
+        install_name_tool libnssutil3.dylib -change /usr/local/opt/nspr/lib/libplds4.dylib @executable_path/libplds4.dylib
+        install_name_tool libnssutil3.dylib -change /usr/local/opt/nspr/lib/libnspr4.dylib @executable_path/libnspr4.dylib
+
+        install_name_tool libfreebl3.dylib -change /usr/local/opt/nspr/lib/libnspr4.dylib @executable_path/libnspr4.dylib
+        install_name_tool libfreebl3.dylib -change /usr/local/Cellar/nss/"$nss_version"/lib/libnssutil3.dylib @executable_path/libnssutil3.dylib
+
+        install_name_tool libplds4.dylib -change /usr/local/Cellar/nspr/"$nspr_version"/lib/libnspr4.dylib @executable_path/libnspr4.dylib
+
+        install_name_tool libplc4.dylib -change /usr/local/Cellar/nspr/"$nspr_version"/lib/libnspr4.dylib @executable_path/libnspr4.dylib
     - name: freeze suricata-update
       run: |
         pyinstaller --onefile bin/suricata-update
@@ -63,8 +94,8 @@ jobs:
         mkdir -p $HOME/suricata/share/file
         cp /usr/local/Cellar/libmagic/$version/share/misc/magic.mgc $HOME/suricata/share/file
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim15.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim16.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim15.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim16.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
