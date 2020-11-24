@@ -63,7 +63,20 @@ jobs:
         mkdir -p /home/runneradmin/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config /home/runneradmin/suricata/etc/suricata
         chmod og+r /home/runneradmin/suricata/etc/suricata/*
         # add the .dlls that couldn't be statically linked.
-        mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{pcap.dll,libnspr4.dll,libplc4.dll,libplds4.dll,libssp-0.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll,zlib1.dll} /home/runneradmin/suricata/dlls
+        mkdir /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/pcap.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/libnspr4.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/libplc4.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/libplds4.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/libssp-0.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/libwinpthread-1.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/nss3.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/nssutil3.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/zlib1.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/softokn3.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/freebl3.dll /home/runneradmin/suricata/dlls
+        cp /mingw64/bin/libsqlite3-0.dll /home/runneradmin/suricata/dlls
+
         # We install rules this way rather than "make install-rules"
         # because (1) the configure script on the github actions windows
         # runner doesn't detect the presence of python yaml lib (though
