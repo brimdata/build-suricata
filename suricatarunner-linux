@@ -23,4 +23,4 @@ rule-files:
   - $ruledir/suricata.rules
 " >> "$userdir/brim-conf-run.yaml"
 
-exec "$dir/bin/suricata" -c "$userdir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r -
+LD_LIBRARY_PATH="$dir/bin" exec "$dir/bin/suricata" -c "$userdir/brim-conf-run.yaml" --set classification-file="$dir/etc/suricata/classification.config" --set reference-config-file="$dir/etc/suricata/reference.config" --set threshold-file="$dir/etc/suricata/threshold.config" -r -
