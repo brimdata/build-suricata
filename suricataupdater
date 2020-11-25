@@ -17,4 +17,4 @@ data-directory: $datadir
 dist-rule-directory: $dir/share/suricata/rules
 " > "$datadir/update.yaml"
 
-exec "$dir/bin/suricata-update" --suricata "$dir/bin/suricata" --suricata-conf "$dir/brim-conf.yaml" --conf "$datadir/update.yaml" --no-test --no-reload "$@"
+LD_LIBRARY_PATH="$dir/bin" exec "$dir/bin/suricata-update" --suricata "$dir/bin/suricata" --suricata-conf "$dir/brim-conf.yaml" --conf "$datadir/update.yaml" --no-test --no-reload "$@"
