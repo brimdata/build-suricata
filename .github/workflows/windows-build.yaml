@@ -61,6 +61,7 @@ jobs:
         make install
         # make install-conf doesn't work on windows as it has hard-coded to write to C:/Program Files/suricata.
         mkdir -p /home/runneradmin/suricata/etc/suricata && cp suricata.yaml threshold.config etc/{classification,reference}.config /home/runneradmin/suricata/etc/suricata
+        chmod og+r /home/runneradmin/suricata/etc/suricata/*
         # add the .dlls that couldn't be statically linked.
         mkdir /home/runneradmin/suricata/dlls && cp /mingw64/bin/{pcap.dll,libnspr4.dll,libplc4.dll,libplds4.dll,libssp-0.dll,libwinpthread-1.dll,nss3.dll,nssutil3.dll,zlib1.dll} /home/runneradmin/suricata/dlls
         # We install rules this way rather than "make install-rules"

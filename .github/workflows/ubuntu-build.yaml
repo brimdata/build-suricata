@@ -53,6 +53,7 @@ jobs:
         make -f Makefile.brim suricata
         cd ..
         make install-full
+        chmod og+r $HOME/suricata/etc/suricata/*
     - name: add dynamic libraries
       run: |
         cd $HOME/suricata/bin
