@@ -118,8 +118,8 @@ jobs:
         rm -rf /home/runneradmin/suricata/include
     - name: create zip
       run: |
-        cd /home/runneradmin && zip -r suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip suricata
+        cd /home/runneradmin && zip -r suricata-v5.0.3-brim24.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp /home/runneradmin/suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip
+        gsutil cp /home/runneradmin/suricata-v5.0.3-brim24.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/suricata-v5.0.3-brim24.$(go env GOOS)-$(go env GOARCH).zip

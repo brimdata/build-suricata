@@ -100,8 +100,9 @@ jobs:
         rm -rf $HOME/suricata/lib
         rm -rf $HOME/suricata/include
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim24.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim24.$(go env GOOS)-$(go env GOARCH).zip gs://brimsec/suricata/
+
