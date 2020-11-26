@@ -75,9 +75,14 @@ jobs:
         cp brim-conf.yaml $HOME/suricata
         cp suricataupdater $HOME/suricata
         cp suricatarunner-linux $HOME/suricata/suricatarunner
+    - name: prune unneeded installed files
+      run: |
+        rm -rf $HOME/suricata/share/doc
+        rm -rf $HOME/suricata/lib
+        rm -rf $HOME/suricata/include
     - name: create zip
-      run: cd $HOME && zip -r suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip suricata
+      run: cd $HOME && zip -r suricata-v5.0.3-brim24.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'
       name: Upload release artifacts to Google Cloud Storage bucket
       run: |
-        gsutil cp $HOME/suricata-v5.0.3-brim23.linux-amd64.zip gs://brimsec/suricata/
+        gsutil cp $HOME/suricata-v5.0.3-brim24.linux-amd64.zip gs://brimsec/suricata/
