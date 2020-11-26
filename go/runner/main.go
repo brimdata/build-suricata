@@ -47,9 +47,9 @@ rule-files:
 func runSuricata(baseDir, execPath string) error {
 	cmd := exec.Command(execPath,
 		"-c", filepath.Join(baseDir, "brim-conf-run.yaml"),
-		"--set", fmt.Sprintf("classification-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/share/suricata/classification.config"))),
-		"--set", fmt.Sprintf("reference-config-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/share/suricata/reference.config"))),
-		"--set", fmt.Sprintf("threshold-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/share/suricata/threshold.config"))),
+		"--set", fmt.Sprintf("classification-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/etc/suricata/classification.config"))),
+		"--set", fmt.Sprintf("reference-config-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/etc/suricata/reference.config"))),
+		"--set", fmt.Sprintf("threshold-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/etc/suricata/threshold.config"))),
 		"-r", "-")
 
 	cmd.Stdin = os.Stdin
