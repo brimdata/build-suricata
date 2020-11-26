@@ -94,6 +94,11 @@ jobs:
         echo found libmagic version $version
         mkdir -p $HOME/suricata/share/file
         cp /usr/local/Cellar/libmagic/$version/share/misc/magic.mgc $HOME/suricata/share/file
+    - name: prune unneeded installed files
+      run: |
+        rm -rf $HOME/suricata/share/doc
+        rm -rf $HOME/suricata/lib
+        rm -rf $HOME/suricata/include
     - name: create zip
       run: cd $HOME && zip -r suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip suricata
     - if: github.ref == 'refs/heads/master'

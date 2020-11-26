@@ -111,6 +111,11 @@ jobs:
         pyinstaller --onefile bin\suricata-update
         cp dist\suricata-update.exe C:\msys64\home\runneradmin\suricata\bin
       shell: cmd
+    - name: prune unneeded installed files
+      run: |
+        rm -rf /home/runneradmin/suricata/share/doc
+        rm -rf /home/runneradmin/suricata/lib
+        rm -rf /home/runneradmin/suricata/include
     - name: create zip
       run: |
         cd /home/runneradmin && zip -r suricata-v5.0.3-brim23.$(go env GOOS)-$(go env GOARCH).zip suricata
