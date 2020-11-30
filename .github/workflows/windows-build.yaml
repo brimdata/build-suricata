@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - fix-release-path
     tags:
       - v*brim*
 
@@ -127,7 +127,7 @@ jobs:
       with:
         name: windows
         path: suricata-*.zip
-    - if: startsWith(github.event.ref, 'refs/tags/')
+    - if: #startsWith(github.event.ref, 'refs/tags/')
       uses: svenstaro/upload-release-action@1.1.0
       with:
         repo_token: ${{ secrets.GITHUB_TOKEN }}
