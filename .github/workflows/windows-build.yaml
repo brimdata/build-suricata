@@ -119,7 +119,9 @@ jobs:
         rm -rf /home/runneradmin/suricata/lib
         rm -rf /home/runneradmin/suricata/include
     - name: create zip
-      run: zip -r suricata-$(git describe --always --tags).$(go env GOOS)-$(go env GOARCH).zip $HOME/suricata
+      run: |
+        label=$(git describe --always --tags)
+        cd /home/runneradmin && zip -r suricata-$label.$(go env GOOS)-$(go env GOARCH).zip suricata
     - uses: actions/upload-artifact@v2
       with:
         name: windows
