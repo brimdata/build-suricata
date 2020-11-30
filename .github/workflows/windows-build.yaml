@@ -121,7 +121,8 @@ jobs:
     - name: create zip
       run: |
         label=$(git describe --always --tags)
-        cd /home/runneradmin && zip -r suricata-$label.$(go env GOOS)-$(go env GOARCH).zip suricata
+        pushd /home/runneradmin && zip -r suricata-$label.$(go env GOOS)-$(go env GOARCH).zip suricata
+        popd && mv /home/runneradmin/suricata-*zip .
     - uses: actions/upload-artifact@v2
       with:
         name: windows
