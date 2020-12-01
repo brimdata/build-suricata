@@ -110,6 +110,8 @@ jobs:
       run: |
         curl -L https://github.com/brimsec/suricata-update/archive/fix-windows.tar.gz | tar zxvf - --strip-components=1
         pip3 install pyinstaller
+        pip3 install -r requirements.txt
+        pip3 install pyyaml
         pyinstaller --onefile bin\suricata-update
         cp dist\suricata-update.exe C:\msys64\home\runneradmin\suricata\bin
       shell: cmd
