@@ -28,48 +28,55 @@ func zdepsSuricataDirectory() (string, error) {
 	return filepath.Dir(execFile), nil
 }
 
-func makeConfig(baseDir, dest string) error {
+func makeConfig(installDir, dataDir, dest string) error {
 	ruleConfig := fmt.Sprintf(`
-data-directory: %s\var\lib\suricata
+data-directory: %s
 dist-rule-directory: %s\share\suricata\rules
-`, baseDir, baseDir)
+`, dataDir, installDir)
 
-	return ioutil.WriteFile(filepath.Join(baseDir, dest), []byte(ruleConfig), 0644)
+	return ioutil.WriteFile(filepath.Join(dataDir, dest), []byte(ruleConfig), 0644)
 }
 
-func runSuricataUpdate(baseDir, execPath string) error {
+func runSuricataUpdate(installDir, dataDir, execPath string) error {
 	cmd := exec.Command(execPath,
-		"--suricata", filepath.Join(baseDir, "bin/suricata.exe"),
-		"--config", filepath.Join(baseDir, "update.yaml"),
-		"--suricata-conf", filepath.Join(baseDir, "brim-conf.yaml"),
+		"--suricata", filepath.Join(installDir, "bin/suricata.exe"),
+		"--config", filepath.Join(dataDir, "update.yaml"),
+		"--suricata-conf", filepath.Join(installDir, "brim-conf.yaml"),
 		"--no-test",
 		"--no-reload")
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 
-	path := fmt.Sprintf("PATH=%s;%s", filepath.Join(baseDir, "dlls"), os.Getenv("PATH"))
+	path := fmt.Sprintf("PATH=%s;%s", filepath.Join(installDir, "dlls"), os.Getenv("PATH"))
 	cmd.Env = append(os.Environ(), path)
 
 	return cmd.Run()
 }
 
 func main() {
-	baseDir, err := zdepsSuricataDirectory()
+	installDir, err := zdepsSuricataDirectory()
 	if err != nil {
 		log.Fatalln("zdepsSuricataDirectory failed:", err)
 	}
+	dataDir := os.Getenv("BRIM_SURICATA_USER_DIR")
+	if dataDir == "" {
+		dataDir = filepath.Join(installDir, "var", "lib", "suricata")
+	}
+	if err := os.MkdirAll(dataDir, 0755); err != nil {
+		log.Fatalln("os.Mkdir %s failed:", dataDir, err)
+	}
 
-	if err := makeConfig(baseDir, "update.yaml"); err != nil {
+	if err := makeConfig(installDir, dataDir, "update.yaml"); err != nil {
 		log.Fatalln("makeConfig failed:", err)
 	}
 
-	execPath := filepath.Join(baseDir, filepath.FromSlash(execRelPath))
+	execPath := filepath.Join(installDir, filepath.FromSlash(execRelPath))
 	if _, err := os.Stat(execPath); err != nil {
 		log.Fatalln("suricata-update executable not found at", execPath)
 	}
 
-	err = runSuricataUpdate(baseDir, execPath)
+	err = runSuricataUpdate(installDir, dataDir, execPath)
 	if err != nil {
 		log.Fatalln("launchSuricata failed", err)
 	}
