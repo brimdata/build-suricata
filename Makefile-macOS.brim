@@ -8,4 +8,4 @@ nspr_libs = /usr/local/opt/nspr/lib/libplc4.a /usr/local/opt/nspr/lib/libplds4.a
 
 suricata: $(suricata_OBJECTS) $(suricata_DEPENDENCIES) $(EXTRA_suricata_DEPENDENCIES)
 	@rm -f suricata$(EXEEXT)
-	$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) /usr/local/Cellar/jansson/2.13.1/lib/libjansson.a /usr/local/Cellar/bzip2/1.0.8/lib/libbz2.a /usr/local/Cellar/libmagic/5.39/lib/libmagic.a /usr/local/Cellar/lz4/1.9.2/lib/liblz4.a /usr/local/Cellar/libnet/1.2/lib/libnet.a $(nss_libs) $(nspr_libs) /usr/local/Cellar/pcre/8.44/lib/libpcre.a /usr/local/Cellar/libyaml/0.2.5/lib/libyaml.a $(LIBS)
+	$(AM_V_CCLD)$(suricata_LINK) $(suricata_OBJECTS) $(suricata_LDADD) /usr/local/Cellar/jansson/2.13.1/lib/libjansson.a /usr/local/Cellar/bzip2/1.0.8/lib/libbz2.a /usr/local/Cellar/libmagic/5.39/lib/libmagic.a /usr/local/Cellar/lz4/1.9.3/lib/liblz4.a /usr/local/Cellar/libnet/1.2/lib/libnet.a $(nss_libs) $(nspr_libs) /usr/local/Cellar/pcre/8.44/lib/libpcre.a /usr/local/Cellar/libyaml/0.2.5/lib/libyaml.a $(LIBS)

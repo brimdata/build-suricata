@@ -13,12 +13,6 @@ jobs:
     runs-on: ubuntu-18.04
     steps:
     - uses: actions/checkout@v2
-    - name: Setup Google Cloud Platform
-      uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-      with:
-        version: '290.0.1'
-        project_id: ${{ secrets.GCLOUD_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCLOUD_CREDENTIAL_BRIMSEC_BUCKET }}
     - name: install deps
       run: |
         sudo apt-get update
