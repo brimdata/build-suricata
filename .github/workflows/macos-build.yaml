@@ -5,7 +5,6 @@ on:
   push:
     branches:
       - master
-      - fix-build-lz4
     tags:
       - v*brim*
 
