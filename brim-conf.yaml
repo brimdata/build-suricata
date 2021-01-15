@@ -414,3 +414,6 @@ app-layer:
     # SIP, disabled by default.
     sip:
       #enabled: no
+
+pcap-file:
+  checksum-checks: no
