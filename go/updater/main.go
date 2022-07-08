@@ -37,13 +37,18 @@ dist-rule-directory: %s\share\suricata\rules
 	return ioutil.WriteFile(filepath.Join(dataDir, dest), []byte(ruleConfig), 0644)
 }
 
-func runSuricataUpdate(installDir, dataDir, execPath string) error {
-	cmd := exec.Command(execPath,
+func runSuricataUpdate(installDir, dataDir, execPath string, args []string) error {
+
+	requiredArgs := []string{
 		"--suricata", filepath.Join(installDir, "bin/suricata.exe"),
 		"--config", filepath.Join(dataDir, "update.yaml"),
 		"--suricata-conf", filepath.Join(installDir, "brim-conf.yaml"),
 		"--no-test",
-		"--no-reload")
+		"--no-reload"}
+
+	allArgs := append(requiredArgs, args[1:]...)
+
+	cmd := exec.Command(execPath, allArgs...)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
@@ -76,7 +81,7 @@ func main() {
 		log.Fatalln("suricata-update executable not found at", execPath)
 	}
 
-	err = runSuricataUpdate(installDir, dataDir, execPath)
+	err = runSuricataUpdate(installDir, dataDir, execPath, os.Args)
 	if err != nil {
 		log.Fatalln("launchSuricata failed", err)
 	}
