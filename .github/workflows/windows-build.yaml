@@ -27,7 +27,7 @@ jobs:
       run: |
         pacman -Su --noconfirm libyaml-devel pcre-devel jansson-devel
         pacman -Su --noconfirm \
-          mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja libtool autoconf2.71 \
+          mingw-w64-x86_64-libyaml mingw-w64-x86_64-pcre mingw-w64-x86_64-ninja base-devel \
           mingw-w64-x86_64-rust mingw-w64-x86_64-jansson mingw-w64-x86_64-nss mingw-w64-x86_64-nspr
 
     - name: build libpcap
