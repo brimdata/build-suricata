@@ -5,6 +5,7 @@ on:
   push:
     branches:
       - master
+      - fix-ci
     tags:
       - v*brim*
 
