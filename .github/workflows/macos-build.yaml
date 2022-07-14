@@ -44,6 +44,8 @@ jobs:
         cd ..
         make install-full
         chmod og+r $HOME/suricata/etc/suricata/*
+      env:
+        PYTHONPATH: /Users/runner/suricata/lib/python3.9/site-packages
     - name: add and fix dylibs
       run: |
         cd $HOME/suricata/bin
