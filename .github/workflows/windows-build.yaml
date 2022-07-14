@@ -36,7 +36,7 @@ jobs:
         ./build-libpcap
     - name: clone Suricata and autogen
       run: |
-        git clone --depth 1 --branch brim-suricata-5.0.3-fix-ci https://github.com/brimsec/suricata.git
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         dos2unix.exe libhtp/configure.ac
@@ -45,7 +45,7 @@ jobs:
         ./autogen.sh
     - name: configure and build
       run: |
-        CFLAGS=-DPCRE_STATIC= ./configure --disable-gccmarch-native --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
+        CFLAGS=-DPCRE_STATIC= ./configure --disable-gccmarch-native --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata LDFLAGS=-lbcrypt
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
