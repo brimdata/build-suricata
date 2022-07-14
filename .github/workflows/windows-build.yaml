@@ -45,12 +45,12 @@ jobs:
         ./autogen.sh
     - name: configure and build
       run: |
-        CFLAGS=-DPCRE_STATIC= LDFLAGS=-lbcrypt ./configure --disable-gccmarch-native --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
+        CFLAGS=-DPCRE_STATIC= ./configure --disable-gccmarch-native --disable-shared --enable-static --enable-gccprotect --prefix /home/runneradmin/suricata
         make -j2
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
         # re-link with some our modified Makefile that statically links those static libs that could be.
-        rm suricata && make -f Makefile.brim
+        rm suricata && LDFLAGS=-lbcrypt make -f Makefile.brim
         cd ..
       working-directory: suricata
     - name: install
