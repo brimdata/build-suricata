@@ -50,7 +50,7 @@ jobs:
         cp ../Makefile-windows.brim src/Makefile.brim
         cd src
         # re-link with some our modified Makefile that statically links those static libs that could be.
-        rm suricata && LDFLAGS=-lbcrypt make -f Makefile.brim
+        rm suricata && make -f Makefile.brim
         cd ..
       working-directory: suricata
     - name: install
