@@ -38,12 +38,14 @@ dist-rule-directory: %s\share\suricata\rules
 }
 
 func runSuricataUpdate(installDir, dataDir, execPath string) error {
-	cmd := exec.Command(execPath,
+	args := append([]string{
 		"--suricata", filepath.Join(installDir, "bin/suricata.exe"),
 		"--config", filepath.Join(dataDir, "update.yaml"),
 		"--suricata-conf", filepath.Join(installDir, "brim-conf.yaml"),
 		"--no-test",
-		"--no-reload")
+		"--no-reload",
+	}, os.Args[1:]...)
+	cmd := exec.Command(execPath, args...)
 
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
