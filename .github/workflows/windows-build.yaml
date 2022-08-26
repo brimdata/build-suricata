@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - current-actions-runners
     tags:
       - v*brim*
 
@@ -35,7 +35,7 @@ jobs:
         ./build-libpcap
     - name: clone Suricata and autogen
       run: |
-        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimdata/suricata.git
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         dos2unix.exe libhtp/configure.ac
@@ -102,8 +102,8 @@ jobs:
         cp suricatarunner.exe suricataupdater.exe /home/runneradmin/suricata/
     - name: freeze suricata-update
       run: |
-        curl -L https://github.com/brimsec/suricata-update/archive/fix-windows.tar.gz | tar zxvf - --strip-components=1
-        pip3 install pyinstaller
+        curl -L https://github.com/brimdata/suricata-update/archive/fix-windows.tar.gz | tar zxvf - --strip-components=1
+        pip3 install pyinstaller==4.5.1
         pip3 install -r requirements.txt
         pip3 install pyyaml
         pyinstaller --onefile bin\suricata-update

@@ -4,7 +4,7 @@ on:
   pull_request:
   push:
     branches:
-      - master
+      - current-actions-runners
     tags:
       - v*brim*
 
@@ -18,17 +18,17 @@ jobs:
         brew install rust pkg-config
         brew install jansson libmagic libnet libyaml lz4 nspr nss pcre bzip2
         brew install autoconf automake libtool
-        pip3 install pyyaml pyinstaller
+        pip3 install pyyaml pyinstaller==4.5.1
     - name: clone Suricata and autogen
       run: |
-        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimdata/suricata.git
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         ./autogen.sh
     - name: get suricata-update
       run: |
         curl -L \
-              https://github.com/brimsec/suricata-update/archive/master.tar.gz | \
+              https://github.com/brimdata/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
     - name: configure and build
