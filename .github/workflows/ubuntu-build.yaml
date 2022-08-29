@@ -10,7 +10,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-20.04
     steps:
     - uses: actions/checkout@v2
     - name: install deps
@@ -21,20 +21,20 @@ jobs:
          libcap-ng-dev libcap-ng0 make libmagic-dev libjansson-dev libjansson4 pkg-config libnss3-dev \
         libnspr4-dev liblz4-dev zip rustc cargo python3-setuptools
         pip3 install wheel
-        pip3 install pyinstaller
+        pip3 install pyinstaller==4.5.1
     - name: build libpcap
       run: |
         ./build-libpcap
     - name: clone Suricata and autogen
       run: |
-        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimsec/suricata.git
+        git clone --depth 1 --branch brim-suricata-5.0.3 https://github.com/brimdata/suricata.git
         cd suricata
         git clone https://github.com/OISF/libhtp -b 0.5.x
         ./autogen.sh
     - name: get suricata-update
       run: |
         curl -L \
-              https://github.com/brimsec/suricata-update/archive/master.tar.gz | \
+              https://github.com/brimdata/suricata-update/archive/master.tar.gz | \
               tar zxvf - --strip-components=1
       working-directory: suricata/suricata-update
     - name: configure and build
