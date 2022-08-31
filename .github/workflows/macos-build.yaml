@@ -41,12 +41,10 @@ jobs:
         rm suricata
         make -f Makefile.brim
         cd ..
-        mkdir -p /Users/runner/suricata/bin
-        ln -s /usr/local/bin/suricata-update /Users/runner/suricata/bin/suricata-update
         make install-full
         chmod og+r $HOME/suricata/etc/suricata/*
       env:
-        PYTHONPATH: /usr/local/lib/python3.10/site-packages/suricata_update-1.2.0-py3.10.egg
+        PYTHONPATH: /Users/runner/suricata/lib/python3.9/site-packages
     - name: add and fix dylibs
       run: |
         cd $HOME/suricata/bin
