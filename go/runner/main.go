@@ -29,11 +29,15 @@ func zdepsSuricataDirectory() (string, error) {
 	return filepath.Dir(execFile), nil
 }
 
-func makeConfig(baseDir, source, dest string) error {
+func makeConfig(baseDir, confDir, source, dest string) error {
+	rulesFile := filepath.Join(confDir, `rules\suricata.rules`)
+	if _, err := os.Stat(rulesFile); err != nil {
+		rulesFile = filepath.Join(baseDir, `var\lib\suricata\rules\suricata.rules`)
+	}
 	ruleConfig := fmt.Sprintf(`
 rule-files:
-  - %s\var\lib\suricata\rules\suricata.rules
-`, baseDir)
+  - %s
+`, rulesFile)
 
 	input, err := ioutil.ReadFile(filepath.Join(baseDir, source))
 	if err != nil {
@@ -41,12 +45,12 @@ rule-files:
 	}
 	input = append(input, []byte(ruleConfig)...)
 
-	return ioutil.WriteFile(filepath.Join(baseDir, dest), input, 0644)
+	return ioutil.WriteFile(filepath.Join(confDir, dest), input, 0644)
 }
 
-func runSuricata(baseDir, execPath string) error {
+func runSuricata(baseDir, confDir, execPath string) error {
 	cmd := exec.Command(execPath,
-		"-c", filepath.Join(baseDir, "brim-conf-run.yaml"),
+		"-c", filepath.Join(confDir, "brim-conf-run.yaml"),
 		"--set", fmt.Sprintf("classification-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/etc/suricata/classification.config"))),
 		"--set", fmt.Sprintf("reference-config-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/etc/suricata/reference.config"))),
 		"--set", fmt.Sprintf("threshold-file=%s", filepath.FromSlash(filepath.Join(baseDir, "/etc/suricata/threshold.config"))),
@@ -67,8 +71,15 @@ func main() {
 	if err != nil {
 		log.Fatalln("zdepsSuricataDirectory failed:", err)
 	}
+	confDir := os.Getenv("BRIM_SURICATA_USER_DIR")
+	if confDir == "" {
+		confDir = baseDir
+	}
+	if err := os.MkdirAll(confDir, 0755); err != nil {
+		log.Fatalln("os.MkdirAll failed:", err)
+	}
 
-	if err := makeConfig(baseDir, "brim-conf.yaml", "brim-conf-run.yaml"); err != nil {
+	if err := makeConfig(baseDir, confDir, "brim-conf.yaml", "brim-conf-run.yaml"); err != nil {
 		log.Fatalln("makeConfig failed:", err)
 	}
 
@@ -77,7 +88,7 @@ func main() {
 		log.Fatalln("suricata executable not found at", execPath)
 	}
 
-	err = runSuricata(baseDir, execPath)
+	err = runSuricata(baseDir, confDir, execPath)
 	if err != nil {
 		log.Fatalln("launchSuricata failed", err)
 	}
